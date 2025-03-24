@@ -4,11 +4,13 @@ namespace App\Entity;
 
 use App\Repository\UsuarioRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UsuarioRepository::class)]
-class Usuario
+class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -119,5 +121,39 @@ class Usuario
         }
 
         return $this;
+    }
+
+    public function getRoles(): array
+    {
+        // Devuelve un array de roles. Por defecto, asignamos el rol "ROLE_USER".
+        return ['ROLE_USER'];
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->contrasena;
+    }
+
+    public function getSalt(): ?string
+    {
+        // No se necesita un salt si usas algoritmos modernos como bcrypt o sodium.
+        return null;
+    }
+
+    public function getUsername(): string
+    {
+        // Symfony usa este método para identificar al usuario. Usaremos el email como identificador.
+        return $this->email;
+    }
+
+    public function getUserIdentifier(): string
+    {
+        // Symfony usa este método para identificar al usuario. Usaremos el email como identificador.
+        return $this->email;
+    }
+
+    public function eraseCredentials(): void
+    {
+        // Si almacenas datos sensibles en la entidad, límpialos aquí.
     }
 }
