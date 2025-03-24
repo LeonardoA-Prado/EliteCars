@@ -4,10 +4,12 @@ namespace App\Entity;
 
 use App\Repository\UsuarioRepository;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UsuarioRepository::class)]
 class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
@@ -28,6 +30,12 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255)]
     private ?string $contrasena = null;
+
+    /**
+     * @var list<string> The user roles
+     */
+    #[ORM\Column]
+    private array $roles = [];
 
     /**
      * @var Collection<int, Transaccion>
@@ -123,37 +131,57 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getRoles(): array
+     /**
+     * The public representation of the user (e.g. a username, an email address, etc.)
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
     {
-        // Devuelve un array de roles. Por defecto, asignamos el rol "ROLE_USER".
-        return ['ROLE_USER'];
+        return (string) $this->email;
     }
 
-    public function getPassword(): ?string
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
+    public function getPassword(): string
     {
         return $this->contrasena;
     }
 
-    public function getSalt(): ?string
+    public function setPassword(string $contrasena): self
     {
-        // No se necesita un salt si usas algoritmos modernos como bcrypt o sodium.
-        return null;
+        $this->contrasena = $contrasena;
+
+        return $this;
     }
 
-    public function getUsername(): string
-    {
-        // Symfony usa este método para identificar al usuario. Usaremos el email como identificador.
-        return $this->email;
-    }
-
-    public function getUserIdentifier(): string
-    {
-        // Symfony usa este método para identificar al usuario. Usaremos el email como identificador.
-        return $this->email;
-    }
-
+    /**
+     * @see UserInterface
+     */
     public function eraseCredentials(): void
     {
-        // Si almacenas datos sensibles en la entidad, límpialos aquí.
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
     }
+
 }

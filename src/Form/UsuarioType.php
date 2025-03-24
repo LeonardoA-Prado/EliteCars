@@ -16,6 +16,7 @@ class UsuarioType extends AbstractType
             ->add('apellidos')
             ->add('email')
             ->add('contrasena')
+            ->add('roles')
         ;
     }
 
