@@ -13,7 +13,7 @@ One to two paragraph statement about your product and what it does.
 
 Security:
 
-Mas información de la libreria en [Security Docs]: https://symfony.com/doc/current/security.html
+Mas información de la libreria en [Security Docs](https://symfony.com/doc/current/security.html)
 ```sh
 composer require symfony/security-bundle
 ```
