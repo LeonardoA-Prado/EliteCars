@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Usuario index{% endblock %}
+
 
 {% block body %}
-
+{% if app.user %}
     <h1>Usuario index</h1>
 
     <table class="table">
@@ -19,7 +19,7 @@
             </tr>
         </thead>
         <tbody>
-        {% if app.user %}
+        
             <div class="mb-3">
                 You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
             </div>
@@ -44,7 +44,17 @@
             {% endfor %}
         </tbody>
     </table>
-
     <a href="{{ path('app_usuario_new') }}">Create new</a>
+    {% else %}
+    <div class="mb-3">
+        <h3>NO TIENES PERMISOS O NO TE HAS LOGUEADO!! <a href="{{ path('app_login') }}">Volver a loguearte</a></h3>
+    </div>
     {% endif %}
 {% endblock %}
+
+
+
+
+
+
+    
