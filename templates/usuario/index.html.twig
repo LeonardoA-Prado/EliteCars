@@ -3,6 +3,7 @@
 {% block title %}Usuario index{% endblock %}
 
 {% block body %}
+
     <h1>Usuario index</h1>
 
     <table class="table">
@@ -11,31 +12,39 @@
                 <th>Id</th>
                 <th>Nombre</th>
                 <th>Apellidos</th>
+                <th>Roles</th>
                 <th>Email</th>
                 <th>Contrasena</th>
                 <th>actions</th>
             </tr>
         </thead>
         <tbody>
-        {% for usuario in usuarios %}
-            <tr>
-                <td>{{ usuario.id }}</td>
-                <td>{{ usuario.nombre }}</td>
-                <td>{{ usuario.apellidos }}</td>
-                <td>{{ usuario.email }}</td>
-                <td>{{ usuario.contrasena }}</td>
-                <td>
-                    <a href="{{ path('app_usuario_show', {'id': usuario.id}) }}">show</a>
-                    <a href="{{ path('app_usuario_edit', {'id': usuario.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="6">no records found</td>
-            </tr>
-        {% endfor %}
+        {% if app.user %}
+            <div class="mb-3">
+                You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+            </div>
+        
+            {% for usuario in usuarios %}
+                <tr>
+                    <td>{{ usuario.id }}</td>
+                    <td>{{ usuario.nombre }}</td>
+                    <td>{{ usuario.apellidos }}</td>
+                    <td>{{ usuario.roles|join(', ') }}</td>
+                    <td>{{ usuario.email }}</td>
+                    <td>{{ usuario.contrasena }}</td>
+                    <td>
+                        <a href="{{ path('app_usuario_show', {'id': usuario.id}) }}">show</a>
+                        <a href="{{ path('app_usuario_edit', {'id': usuario.id}) }}">edit</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6">no records found</td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
 
     <a href="{{ path('app_usuario_new') }}">Create new</a>
+    {% endif %}
 {% endblock %}
