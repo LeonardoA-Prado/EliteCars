@@ -1,5 +1,5 @@
 # ELITE CARS
-> Aplicación dedicada a la compra-venta de coches.
+> Aplicación realizada con Symfony dedicada a la compra-venta de coches.
 
 [![NPM Version][npm-image]][npm-url]
 [![Build Status][travis-image]][travis-url]
@@ -13,10 +13,10 @@ One to two paragraph statement about your product and what it does.
 
 Security:
 
-Mas información de la libreria en [Security Docs](https://symfony.com/doc/current/security.html)
 ```sh
 composer require symfony/security-bundle
 ```
+Mas información de la librería en [Security Docs](https://symfony.com/doc/current/security.html).
 
 Windows:
 
