@@ -60,9 +60,20 @@ class Coche
     #[ORM\OneToMany(targetEntity: Transaccion::class, mappedBy: 'coche')]
     private Collection $transaccions;
 
+    #[ORM\ManyToOne(inversedBy: 'coches')]
+    private ?Usuario $vendedor = null;
+
+    /**
+     * @var Collection<int, CochesImages>
+     */
+    #[ORM\OneToMany(targetEntity: CochesImages::class, mappedBy: 'coche_id',cascade: ['remove'], orphanRemoval: true)]
+    private Collection $cochesImages;
+
+
     public function __construct()
     {
         $this->transaccions = new ArrayCollection();
+        $this->cochesImages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -126,7 +137,6 @@ class Coche
     public function setKilometros(int $kilometros): static
     {
         $this->kilometros = $kilometros;
-
         return $this;
     }
 
@@ -255,4 +265,47 @@ class Coche
 
         return $this;
     }
+
+    public function getVendedor(): ?Usuario
+    {
+        return $this->vendedor;
+    }
+
+    public function setVendedor(?Usuario $vendedor): static
+    {
+        $this->vendedor = $vendedor;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CochesImages>
+     */
+    public function getCochesImages(): Collection
+    {
+        return $this->cochesImages;
+    }
+
+    public function addCochesImage(CochesImages $cochesImage): static
+    {
+        if (!$this->cochesImages->contains($cochesImage)) {
+            $this->cochesImages->add($cochesImage);
+            $cochesImage->setCocheId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCochesImage(CochesImages $cochesImage): static
+    {
+        if ($this->cochesImages->removeElement($cochesImage)) {
+            // set the owning side to null (unless already changed)
+            if ($cochesImage->getCocheId() === $this) {
+                $cochesImage->setCocheId(null);
+            }
+        }
+
+        return $this;
+    }
+
 }

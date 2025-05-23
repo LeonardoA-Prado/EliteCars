@@ -1,0 +1,135 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editar Coche{% endblock %}
+
+{% block stylesheets %}
+    {{ encore_entry_link_tags('app') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('app') }}
+{% endblock %}
+
+{% block body %}
+    <div class="container-small">
+        <h1 class="car-details-page-title">Editar Coche - {{ form.marca.vars.value }} {{ form.modelo.vars.value }} {{ form.version.vars.value }} </h1>
+
+        {{ form_start(form, {'attr': {'class': 'card add-new-car-form'}}) }}
+        <div class="form-content">
+            <div class="form-details">
+
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            {{ form_label(form.marca) }}
+                            {{ form_widget(form.marca, {'attr': {'class': ''}}) }}
+                            {{ form_errors(form.marca) }}
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            {{ form_label(form.modelo) }}
+                            {{ form_widget(form.modelo, {'attr': {'class': ''}}) }}
+                            {{ form_errors(form.modelo) }}
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            {{ form_label(form.version) }}
+                            {{ form_widget(form.version, {'attr': {'class': ''}}) }}
+                            {{ form_errors(form.version) }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                        {{ form_label(form.carroceria) }}
+                        {{ form_widget(form.carroceria, {'attr': {'placeholder': 'Carroceria'}}) }}
+                        {{ form_errors(form.carroceria) }}
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            {{ form_label(form.precio) }}
+                            {{ form_widget(form.precio, {'attr': {'placeholder': 'Precio'}}) }}
+                            {{ form_errors(form.precio) }}
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            {{ form_label(form.kilometros) }}
+                            {{ form_widget(form.kilometros, {'attr': {'placeholder': 'Kilómetros'}}) }}
+                            {{ form_errors(form.kilometros) }}
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            {{ form_label(form.potencia) }}
+                            {{ form_widget(form.potencia, {'attr': {'placeholder': 'Potencia'}}) }}
+                            {{ form_errors(form.potencia) }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                        {{ form_label(form.combustible) }}
+                        {{ form_widget(form.combustible, {'attr': {'placeholder': 'Combustible'}}) }}
+                        {{ form_errors(form.combustible) }}
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            {{ form_label(form.ciudad) }}
+                            {{ form_widget(form.ciudad) }}
+                            {{ form_errors(form.ciudad) }}
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            {{ form_label(form.color) }}
+                            {{ form_widget(form.color) }}
+                            {{ form_errors(form.color) }}
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            {{ form_label(form.cambio) }}
+                            {{ form_widget(form.cambio) }}
+                            {{ form_errors(form.cambio) }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            {{ form_label(form.traccion) }}
+                            {{ form_widget(form.traccion) }}
+                            {{ form_errors(form.traccion) }}
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            {{ form_label(form.cilindrada) }}
+                            {{ form_widget(form.cilindrada) }}
+                            {{ form_errors(form.cilindrada) }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <button class="btn btn-primary">Guardar</button>
+                    </div>
+
+                    <div class="form-group">
+                        <a href="{{ path('app_coche_index') }}" class="btn btn-secondary mt-3">Volver al listado</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

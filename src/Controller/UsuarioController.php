@@ -30,6 +30,11 @@ final class UsuarioController extends AbstractController
     {
         $usuario = new Usuario();
         $form = $this->createForm(UsuarioType::class, $usuario);
+
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $form->remove('roles');
+            $usuario->setRoles(['ROLE_USER']);
+        }
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -40,12 +45,12 @@ final class UsuarioController extends AbstractController
             $entityManager->persist($usuario);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_usuario_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('usuario/new.html.twig', [
             'usuario' => $usuario,
-            'form' => $form,
+            'form' =>$form->createView(),
         ]);
     }
 

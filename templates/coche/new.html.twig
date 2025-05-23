@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ELITECARS - Vender Coche{% endblock %}
+
+{% block body %}
+    {% if app.user %}
+        <div class="container">
+            <h1>Vende tu coche</h1>
+            {{ include('coche/_form.html.twig') }}
+            <a href="{{ path('app_coche_index') }}">Volver</a>
+        </div>
+    {% else %}
+        <main class="page-sell-car">
+            <div class="centered-block container">
+                <div class="alert alert-danger mb-medium">
+                    Debes iniciar sesión o registrarte para vender un coche.
+                </div>
+                <a href="{{ path('app_login') }}" class="btn btn-primary mt-3">Ir a Iniciar Sesión</a>
+            </div>
+        </main>
+    {% endif %}
+{% endblock %}
