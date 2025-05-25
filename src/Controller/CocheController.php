@@ -123,16 +123,19 @@ final class CocheController extends AbstractController
     #[Route('/mis-coches', name: 'app_miscoches', methods: ['GET'])]
     public function myCoches(CocheRepository $cocheRepository): Response
     {
-        // Obtenemos el usuario logueado
         $user = $this->getUser();
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }
         
-        // Se asume que en la entidad Coche, el campo 'vendedor' almacena el usuario relacionado.
-        $coches = $cocheRepository->findBy([
-            'vendedor' => $user
-        ]);
+        // Si el usuario es admin, mostramos todos los coches, de lo contrario, solo los suyos.
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $coches = $cocheRepository->findAll();
+        } else {
+            $coches = $cocheRepository->findBy([
+                'vendedor' => $user
+            ]);
+        }
         
         return $this->render('coche/mis_coches.html.twig', [
             'coches' => $coches,

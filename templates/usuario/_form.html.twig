@@ -1,4 +1,10 @@
+{% if app.user and ('ROLE_ADMIN' in app.user.roles) %}
 {{ form_start(form) }}
     {{ form_widget(form) }}
     <button class="btn">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}
+{% else %}
+    <div class="mb-3">
+        <h3>NO TIENES PERMISOS O NO TE HAS LOGUEADO!! <a href="{{ path('app_login') }}">Volver a loguearte</a></h3>
+    </div>
+{% endif %}

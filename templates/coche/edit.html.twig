@@ -11,6 +11,12 @@
 {% endblock %}
 
 {% block body %}
+{% if not app.user or (coche.vendedor.id != app.user.id and 'ROLE_ADMIN' not in app.user.roles) %}
+        <div class="container-small">
+            <h2>No tienes permisos para editar este coche.</h2>
+            <a href="{{ path('app_coche_index') }}" class="btn btn-secondary mt-3">Volver al listado</a>
+        </div>
+{% else %}
     <div class="container-small">
         <h1 class="car-details-page-title">Editar Coche - {{ form.marca.vars.value }} {{ form.modelo.vars.value }} {{ form.version.vars.value }} </h1>
 
@@ -132,4 +138,5 @@
         </div>
         {{ form_end(form) }}
     </div>
+{% endif %}
 {% endblock %}

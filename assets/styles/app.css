@@ -1427,6 +1427,7 @@ a.pagination-item:hover {
   }
 }
 
+
 @media screen and (max-width: 480px) {
   .find-a-car-inputs > div {
     width: 100%;

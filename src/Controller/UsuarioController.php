@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Usuario;
 use App\Form\UsuarioType;
 use App\Repository\UsuarioRepository;
+use App\Repository\CocheRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,7 +46,11 @@ final class UsuarioController extends AbstractController
             $entityManager->persist($usuario);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
+            if ($this->isGranted('ROLE_ADMIN')) {
+                return $this->redirectToRoute('app_usuario_index', [], Response::HTTP_SEE_OTHER);
+            } else {
+                return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
+            }
         }
 
         return $this->render('usuario/new.html.twig', [
@@ -88,13 +93,31 @@ final class UsuarioController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_usuario_delete', methods: ['POST'])]
-    public function delete(Request $request, Usuario $usuario, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$usuario->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($usuario);
-            $entityManager->flush();
+public function delete(Request $request, Usuario $usuario, EntityManagerInterface $entityManager,CocheRepository $cocheRepository): Response {
+    if ($this->isCsrfTokenValid('delete'.$usuario->getId(), $request->get('_token'))) {
+        // Buscar coches vinculados al usuario
+        $coches = $cocheRepository->findBy(['vendedor' => $usuario]);
+        
+        // Si hay coches y no se ha confirmado la eliminación conjunta...
+        if (!$request->request->get('confirm_deletion')) {
+            // Si tiene coches, incluimos esa información en el mensaje
+            if (count($coches) > 0) {
+                $message = sprintf(
+                    'Su cuenta tiene %d coche(s) vinculado(s). Por favor, marque la casilla para confirmar la eliminación de su cuenta y todos los coches vinculados.',
+                    count($coches)
+                );
+            } else {
+                $message = 'Debe confirmar que desea borrar su cuenta.';
+            }
+            $this->addFlash('warning', $message);
+            return $this->redirectToRoute('app_usuario_show', ['id' => $usuario->getId()]);
         }
 
-        return $this->redirectToRoute('app_usuario_index', [], Response::HTTP_SEE_OTHER);
+        // Si no hay coches vinculados o se confirmó la eliminación conjunta, se procede a borrar
+        $entityManager->remove($usuario);
+        $entityManager->flush();
     }
+
+    return $this->redirectToRoute('app_usuario_index', [], Response::HTTP_SEE_OTHER);
+}
 }

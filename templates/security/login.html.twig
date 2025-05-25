@@ -20,6 +20,17 @@
               </a>
             </div>
             <h1 class="auth-page-title">Iniciar Sesión</h1>
+            {% if error %}
+              {% if error.messageKey == 'Invalid credentials.' %}
+                <div class="alert alert-danger" style="color: red; margin-bottom: 1rem;">
+                  La credenciales son incorrectas.
+                </div>
+              {% else %}
+                <div class="alert alert-danger" style="color: red; margin-bottom: 1rem;">
+                  {{ error.messageKey|trans(error.messageData, 'security') }}
+                </div>
+              {% endif %}
+            {% endif %}
 
             <form action="" method="post">
               <div class="form-group">
@@ -35,6 +46,7 @@
               <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
               <button type="submit" class="btn btn-primary btn-login w-full">Login</button>
+              
               <div class="login-text-dont-have-account">
                 ¿No tienes una cuenta? -
               <a href="{{ path('app_usuario_new') }}"> Click aqui para crear una</a>

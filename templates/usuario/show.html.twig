@@ -3,6 +3,7 @@
 {% block title %}Usuario{% endblock %}
 
 {% block body %}
+{% if app.user and ('ROLE_ADMIN' in app.user.roles) %}
     <h1>Usuario</h1>
 
     <table class="table">
@@ -34,5 +35,28 @@
 
     <a href="{{ path('app_usuario_edit', {'id': usuario.id}) }}">edit</a>
 
-    {{ include('usuario/_delete_form.html.twig') }}
+<form action="{{ path('app_usuario_delete', {'id': usuario.id}) }}" method="post">
+  <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ usuario.id) }}">
+  
+  {% if usuario.coches|length > 0 %}
+    <div class="alert alert-warning">
+      Su cuenta tiene {{ usuario.coches|length }} coche(s) vinculado(s).
+    </div>
+  {% endif %}
+  
+  <div class="alert alert-warning">
+    Marque la casilla para confirmar la eliminación de su cuenta{% if usuario.coches|length > 0 %} y de todos sus coches vinculados{% endif %}.
+    <label>
+      <input type="checkbox" name="confirm_deletion" value="1" required>
+      Confirmo borrar mi cuenta{% if usuario.coches|length > 0 %} y mis coches{% endif %}.
+    </label>
+  </div>
+  
+  <button type="submit" class="btn btn-danger">Borrar cuenta</button>
+</form>
+{% else %}
+    <div class="mb-3">
+        <h3>NO TIENES PERMISOS O NO TE HAS LOGUEADO!! <a href="{{ path('app_login') }}">Volver a loguearte</a></h3>
+    </div>
+{% endif %}
 {% endblock %}
