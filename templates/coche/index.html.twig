@@ -28,15 +28,6 @@
             <label for="kilometros" class="block mb-1">Kilómetros Máx.</label>
             <input type="number" id="kilometros" name="kilometros" placeholder="Máximo km" class="w-full p-2 border rounded"/>
           </div>
-          <div>
-            <label for="carroceria" class="block mb-1">Carrocería</label>
-            <select id="carroceria" name="carroceria" class="w-full p-2 border rounded">
-                <option value="">Todas</option>
-                <option value="berlina">Berlina</option>
-                <option value="pickup">PickUp</option>
-                <option value="suv">SUV</option>
-            </select>
-          </div>
         </div>
         <div>
           <button type="reset" class="btn btn-find-a-car-reset">Reset</button>
@@ -45,6 +36,30 @@
       </form>
     </div>
   </section>
+
+<section class="carroceria-filter my-5">
+    <div class="container">
+      <h2>Categorias</h2>
+      <form id="carroceriaForm" action="{{ path('app_coche_search') }}" method="GET">
+        <div class="car-items-listing">
+          <a href="{{ path('app_coche_search', {'carroceria': 'berlina'}) }}" class="car-item card text-center ">
+            <img src="{{ asset('images/mercedes-car.png') }}" alt="Berlina" class="w-full h-40 object-cover mb-2">
+            <span class="car-item-title">Berlina</span>
+          </a>
+          
+          <a href="{{ path('app_coche_search', {'carroceria': 'pickup'}) }}" class="car-item card text-center ">
+            <img src="{{ asset('images/pickup.png') }}" alt="PickUp" class="w-full h-40 object-cover mb-2">
+            <span class="car-item-title">PickUp</span>
+          </a>
+          <a href="{{ path('app_coche_search', {'carroceria': 'suv'}) }}" class="car-item card text-center ">
+            <img src="{{ asset('images/suv-png.png') }}" alt="SUV" class="w-full h-40 object-cover mb-2">
+            <span>SUV</span>
+          </a>
+        </div>
+      </form>
+    </div>
+  </section>
+
   <section>
     <div class="container">
       <h2>Últimos Coches</h2>

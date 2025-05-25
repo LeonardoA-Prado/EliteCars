@@ -1,14 +1,7 @@
-<!DOCTYPE html>
-<html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Gestionar Imágenes</title>
-    <link rel="stylesheet" href="/css/app.css" />
-  </head>
-  <body>
-    <header>
-      <!-- ...tu header existente... -->
-    </header>
+{% extends 'base.html.twig' %}
+  
+  
+{% block body %}
 
     <main>
       <div class="container">
@@ -34,7 +27,7 @@
                       <input type="checkbox" name="delete_images[]" value="{{ image.id }}" id="delete_image_{{ image.id }}" />
                     </td>
                     <td>
-                      <img src="{{ asset(image.rutaImagen) }}" alt="Imagen" class="my-cars-img-thumbnail" style="width: 120px" />
+                      <img src="{{ asset('images/coches/' ~ coche.id ~ '/' ~ image.rutaImagen) }}" alt="Imagen" class="my-cars-img-thumbnail" style="width: 120px" />
                     </td>
                     <td>
                       <input type="number" name="positions[{{ image.id }}]" value="{{ image.posicion }}" style="width: 80px" />
@@ -72,5 +65,4 @@
         </form>
       </div>
     </main>
-  </body>
-</html>
+{% endblock %}

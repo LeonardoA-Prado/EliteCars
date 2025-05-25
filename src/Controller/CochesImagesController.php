@@ -20,7 +20,7 @@ final class CochesImagesController extends AbstractController
     public function manageImages(Coche $coche, Request $request, EntityManagerInterface $em): Response
     {
         if ($request->isMethod('POST')) {
-            // Obtén los parámetros y si son nulos, establece un array vacío manualmente
+            // Actualiza posiciones y elimina imágenes seleccionadas
             $deleteImages = $request->request->get('delete_images') ?? [];
             $positions = $request->request->get('positions') ?? [];
 
@@ -29,10 +29,38 @@ final class CochesImagesController extends AbstractController
                 if (in_array($imageId, $deleteImages, true)) {
                     $em->remove($image);
                 } elseif (isset($positions[$imageId])) {
-                    $newPosition = (int)$positions[$imageId];
-                    $image->setPosicion($newPosition);
+                    $image->setPosicion((int) $positions[$imageId]);
                 }
             }
+
+            // Manejo de nuevas imágenes (si se han subido)
+            $images = $request->files->get('images');
+            if ($images) {
+                $targetDirectory = $this->getParameter('coches_images_directory') . '/' . $coche->getId();
+                if (!is_dir($targetDirectory)) {
+                    mkdir($targetDirectory, 0755, true);
+                }
+                foreach ($images as $imageFile) {
+                    if ($imageFile) {
+                        $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                        $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+                        try {
+                            $imageFile->move($targetDirectory, $newFilename);
+                        } catch (FileException $e) {
+                            $this->addFlash('danger', 'Error al subir la imagen.');
+                            continue;
+                        }
+                        $newImage = new CochesImages();
+                        // Se guarda solo el nombre del archivo; puedes ajustar la ruta según tus necesidades
+                        $newImage->setRutaImagen($newFilename);
+                        // Se asigna la posición al final (puedes personalizar la lógica)
+                        $newImage->setPosicion(count($coche->getCochesImages()) + 1);
+                        $newImage->setCocheId($coche);
+                        $em->persist($newImage);
+                    }
+                }
+            }
+
             $em->flush();
             $this->addFlash('success', 'Imágenes actualizadas correctamente.');
             return $this->redirectToRoute('coche_manage_images', ['id' => $coche->getId()]);
@@ -46,20 +74,28 @@ final class CochesImagesController extends AbstractController
     #[Route('/coche/{id}/images/add', name: 'coche_add_images', methods: ['POST'])]
     public function addImages(Coche $coche, Request $request, EntityManagerInterface $em): Response
     {
-        $files = $request->files->get('images');
-        if ($files) {
-            foreach ($files as $file) {
-                // Genera un nombre de fichero único para evitar colisiones
-                $newFilename = uniqid().'.'.$file->guessExtension();
-                $uploadDir = $this->getParameter('images_directory');
-                $file->move($uploadDir, $newFilename);
-
-                $image = new CochesImages();
-                $image->setRutaImagen('uploads/images/'.$newFilename);
-                // Se asigna la posición al final (puedes personalizar la lógica)
-                $image->setPosicion(count($coche->getCochesImages()) + 1);
-                $image->setCocheId($coche);
-                $em->persist($image);
+        $images = $request->files->get('images');
+        if ($images) {
+            $targetDirectory = $this->getParameter('coches_images_directory') . '/' . $coche->getId();
+            if (!is_dir($targetDirectory)) {
+                mkdir($targetDirectory, 0755, true);
+            }
+            foreach ($images as $imageFile) {
+                if ($imageFile) {
+                    $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                    $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+                    try {
+                        $imageFile->move($targetDirectory, $newFilename);
+                    } catch (FileException $e) {
+                        $this->addFlash('danger', 'Error al subir la imagen.');
+                        continue;
+                    }
+                    $newImage = new CochesImages();
+                    $newImage->setRutaImagen($newFilename);
+                    $newImage->setPosicion(count($coche->getCochesImages()) + 1);
+                    $newImage->setCocheId($coche);
+                    $em->persist($newImage);
+                }
             }
             $em->flush();
             $this->addFlash('success', 'Imágenes añadidas correctamente.');
