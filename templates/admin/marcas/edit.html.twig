@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ELITECARS | Editar Marca{% endblock %}
+
+{% block body %}
+<body class="page-signup">
+  <main>
+    <div class="container-small page-login">
+      <div class="flex" style="gap: 5rem">
+        <div class="auth-page-form">
+          <h1 class="auth-page-title">Editar Marca</h1>
+          {{ form_start(form, {'attr': {'class': 'auth-page-form'}}) }}
+            <div class="form-group">
+              {{ form_label(form.nombre, 'Nombre de la Marca') }}
+              {{ form_widget(form.nombre, {'attr': {'class': 'form-control', 'placeholder': 'Ingresa el nombre'}}) }}
+              {{ form_errors(form.nombre) }}
+            </div>
+            <hr />
+            <button type="submit" class="btn btn-primary btn-login w-full">Actualizar Marca</button>
+          {{ form_end(form) }}
+        </div>
+        
+      </div>
+    </div>
+  </main>
+</body>
+{% endblock %}
