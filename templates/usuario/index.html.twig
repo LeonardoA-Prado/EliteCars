@@ -1,59 +1,35 @@
 {% extends 'base.html.twig' %}
 
-
+{% block title %}ELITECARS | Usuarios{% endblock %}
 
 {% block body %}
- {% if app.user and ('ROLE_ADMIN' in app.user.roles) %}
-    <h1>Usuarios</h1>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nombre</th>
-                <th>Apellidos</th>
-                <th>Roles</th>
-                <th>Email</th>
-                <th>Contrasena</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <div class="mb-3">
-                You are logged in as {{ app.user.nombre }}, <a href="{{ path('app_logout') }}">Logout</a>
+  {% if app.user and ('ROLE_ADMIN' in app.user.roles) %}
+    <section>
+      <div class="container">
+        <h2>Usuarios</h2>
+        <div id="userItemsListing" class="user-items-listing grid grid-cols-3 gap-1">
+          {% for usuario in usuarios %}
+            <div class="user-item card">
+              <div class="p-medium">
+                <h2 class="user-item-title">{{ usuario.nombre }} {{ usuario.apellidos }}</h2>
+                <p class="user-item-email">{{ usuario.email }}</p>
+                <hr />
+                <p class="m-0">
+                  <span class="user-item-badge">{{ usuario.roles|join(', ') }}</span>
+                </p>
+                <div class="mt-small flex justify-between">
+                  <a href="{{ path('app_usuario_show', {'id': usuario.id}) }}" class="btn btn-primary btn-sm">Ver Perfil</a>
+                  <a href="{{ path('app_usuario_edit', {'id': usuario.id}) }}" class="btn btn-secondary btn-sm">Editar</a>
+                </div>
+              </div>
             </div>
-        
-            {% for usuario in usuarios %}
-                <tr>
-                    <td>{{ usuario.id }}</td>
-                    <td>{{ usuario.nombre }}</td>
-                    <td>{{ usuario.apellidos }}</td>
-                    <td>{{ usuario.roles|join(', ') }}</td>
-                    <td>{{ usuario.email }}</td>
-                    <td>{{ usuario.contrasena }}</td>
-                    <td>
-                        <a href="{{ path('app_usuario_show', {'id': usuario.id}) }}">show</a>
-                        <a href="{{ path('app_usuario_edit', {'id': usuario.id}) }}">edit</a>
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="6">no records found</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <a href="{{ path('app_usuario_new') }}">Create new</a>
-    {% else %}
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+  {% else %}
     <div class="mb-3">
-        <h3>NO TIENES PERMISOS O NO TE HAS LOGUEADO!! <a href="{{ path('app_login') }}">Volver a loguearte</a></h3>
+      <h3>NO TIENES PERMISOS O NO TE HAS LOGUEADO!! <a href="{{ path('app_login') }}">Volver a loguearte</a></h3>
     </div>
-    {% endif %}
+  {% endif %}
 {% endblock %}
-
-
-
-
-
-
-    

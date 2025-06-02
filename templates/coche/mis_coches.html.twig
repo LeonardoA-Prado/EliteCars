@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Mis Coches{% endblock %}
+{% block title %}ELITECARS | Mis Coches{% endblock %}
 
 {% block body %}
 <main>
@@ -11,7 +11,7 @@
         {% else %}
             <div class="card p-medium">
                 <div class="table-responsive">
-                    <table class="table">
+                    <table class="table text-center">
                         <thead>
                             <tr>
                                 <th>Imagen</th>
@@ -45,7 +45,6 @@
                                     <td>
                                         <a href="{{ path('app_coche_show', {'id': coche.id}) }}"
                                            class="btn btn-view inline-flex items-center">
-                                            <!-- Puedes incluir un SVG o texto -->
                                             Ver
                                         </a>
                                         <a href="{{ path('app_coche_edit', {'id': coche.id}) }}"

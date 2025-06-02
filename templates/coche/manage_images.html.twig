@@ -1,68 +1,66 @@
 {% extends 'base.html.twig' %}
-  
-  
+
 {% block body %}
+<main>
+  <div class="container">
+    <h1>Gestionar Imágenes para: {{ coche.marca }} - {{ coche.modelo }}</h1>
 
-    <main>
-      <div class="container">
-        <h1>
-          Gestionar Imágenes para: {{ coche.marca }} - {{ coche.modelo }}
-        </h1>
-
-        <!-- Formulario para actualizar/eliminar imágenes -->
-        <form action="{{ path('coche_manage_images', {id: coche.id}) }}" method="POST" class="card p-medium form-update-images">
-          <div class="table-responsive">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>Eliminar</th>
-                  <th>Imagen</th>
-                  <th>Posición</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for image in coche.cochesImages %}
-                  <tr>
-                    <td>
-                      <input type="checkbox" name="delete_images[]" value="{{ image.id }}" id="delete_image_{{ image.id }}" />
-                    </td>
-                    <td>
+    {# Formulario para actualizar/eliminar imágenes #}
+    {{ form_start(form, { 'attr': {'class': 'card p-medium'} }) }}
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Eliminar</th>
+              <th>Imagen</th>
+              <th>Posición</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for imageForm in form.cochesImages %}
+              <tr>
+                <td>{{ form_row(imageForm.delete) }}</td>
+                <td>
+                  {# Aquí se puede mostrar la imagen original si se tiene acceso mediante el id de la imagen #}
+                  {% set imageId = imageForm.vars.value.id %}
+                  {% for image in coche.cochesImages %}
+                    {% if image.id == imageId %}
                       <img src="{{ asset('images/coches/' ~ coche.id ~ '/' ~ image.rutaImagen) }}" alt="Imagen" class="my-cars-img-thumbnail" style="width: 120px" />
-                    </td>
-                    <td>
-                      <input type="number" name="positions[{{ image.id }}]" value="{{ image.posicion }}" style="width: 80px" />
-                    </td>
-                  </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-          <div class="p-medium" style="width: 100%">
-            <div class="flex justify-end gap-1">
-              <button class="btn btn-primary" type="submit">Actualizar Imágenes</button>
-            </div>
-          </div>
-        </form>
-
-        <hr />
-
-        <!-- Formulario para agregar nuevas imágenes -->
-        <form action="{{ path('coche_add_images', {id: coche.id}) }}" method="POST" enctype="multipart/form-data" class="card form-images p-medium mb-large">
-          <div class="form-image-upload">
-            <div class="upload-placeholder">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 48px">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-              </svg>
-            </div>
-            <input id="carFormImageUpload" type="file" name="images[]" multiple accept="image/*" />
-          </div>
-          <div id="imagePreviews" class="car-form-images"></div>
-          <div class="p-medium" style="width: 100%">
-            <div class="flex justify-end gap-1">
-              <button class="btn btn-primary" type="submit">Añadir Imágenes</button>
-            </div>
-          </div>
-        </form>
+                    {% endif %}
+                  {% endfor %}
+                </td>
+                <td>{{ form_row(imageForm.posicion) }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
-    </main>
+      <div class="p-medium" style="width: 100%">
+        <div class="flex justify-end gap-1">
+          <button class="btn btn-primary" type="submit">Actualizar Imágenes</button>
+        </div>
+      </div>
+    {{ form_end(form) }}
+
+    <hr />
+
+    
+    <form action="{{ path('coche_add_images', {id: coche.id}) }}" method="POST" enctype="multipart/form-data" class="card form-images p-medium mb-large">
+      <div class="form-image-upload">
+        <div class="upload-placeholder">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 48px">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+        </div>
+        <input id="carFormImageUpload" type="file" name="images[]" multiple accept="image/*" />
+      </div>
+      <div id="imagePreviews" class="car-form-images"></div>
+      <div class="p-medium" style="width: 100%">
+        <div class="flex justify-end gap-1">
+          <button class="btn btn-primary" type="submit">Añadir Imágenes</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</main>
 {% endblock %}

@@ -1,15 +1,13 @@
-body {
-    background-color: skyblue;
-}
+
 :root {
  --primary-font: "Ubuntu", sans-serif;
   --primary-color: #b30000;
   --primary-color-hover: #800000;
-  --text-color: #ef0b0b;
+  --text-color: #000000;
   --text-muted-color: #909090;
   --link-color: var(--primary-color);
   --error-color: #e13e3e;
-  --body-bg: #0f0a3a;
+  --body-bg: #dbdbdb;
   --line-height-base: 18px;
   --navbar-bg: #0d0b23;
   --navbar-box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
@@ -383,6 +381,9 @@ body.page-login,
 body.page-signup {
   padding: 3rem 0;
 }
+body.page-login {
+    background-color: #2a2a2a; 
+}
 
 .navbar {
   position: relative;
@@ -717,6 +718,7 @@ main {
 .car-item-title {
   margin: 0.75rem 0;
   font-size: 16px;
+  text-decoration: none;
 }
 
 .car-item-price {

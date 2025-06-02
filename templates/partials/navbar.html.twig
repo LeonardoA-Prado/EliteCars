@@ -1,7 +1,7 @@
 <header class="navbar">
   <div class="container navbar-content">
     <a href="/" class="logo-wrapper">
-      <img src="{{ asset('images/LOGO-ELITE-RECORTADA.svg') }}" alt="Logo" />
+      <img src="{{ asset('images/ELITECARS-LOGO-0.png') }}" alt="Logo" />
     </a>
     <button class="btn btn-default btn-navbar-toggle">
       <svg
@@ -35,12 +35,12 @@
             d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
           />
         </svg>
-        Vender Coche
+        Vender
       </a>
 
       {% if app.user %}
         <div class="navbar-menu" tabindex="-1">
-          <a href="javascript:void(0)" class="navbar-menu-handler">
+          <a href="javascript:void(0)" class="btn btn-add-new-car">
             Hola, {{ app.user.nombre }}
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -60,14 +60,20 @@
           <ul class="submenu">
             {% if is_granted('ROLE_ADMIN') %}
               <li>
-                <a href="{{ path('app_usuario_index') }}">Gestión</a>
+                <a href="{{ path('app_usuario_index') }}">Gestión de usuarios</a>
+              </li>
+              <li>
+                <a href="{{ path('app_usuario_index') }}">Panel de control</a>
               </li>
             {% endif %}
+            <li>
+              <a href="{{ path('app_usuario_show', {'id': app.user.id}) }}">Mi Perfil</a>
+            </li>
             <li>
               <a href="{{ path('app_miscoches') }}">Mis Coches</a>
             </li>
             <li>
-              <a href="#">Mis Coches Favoritos</a>
+              <a href="{{ path('app_mis_transacciones') }}">Mis Transacciones</a>
             </li>
             <li>
               <form action="{{ path('app_logout') }}" method="post">
@@ -92,9 +98,9 @@
               d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
             />
           </svg>
-          Registraté
+          Crear cuenta
         </a>
-        <a href="{{ path('app_login') }}" class="btn btn-login flex items-center">
+        <a href="{{ path('app_login') }}" class="btn btn-primary btn-signup">
           <svg
             style="width: 18px; fill: currentColor; margin-right: 4px"
             viewBox="0 0 1024 1024"
@@ -109,6 +115,33 @@
           Iniciar Sesión
         </a>
       {% endif %}
+      <div class="navbar-menu" tabindex="-1">
+          <a href="javascript:void(0)" class="btn btn-add-new-car">
+            Nosotros
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              style="width: 20px"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="m19.5 8.25-7.5 7.5-7.5-7.5"
+              />
+            </svg>
+          </a>
+          <ul class="submenu">
+            <li>
+              <a href="{{ path('app_politicas') }}">Política de Privacidad</a>
+            </li>
+            <li>
+              <a href="#">Información</a>
+            </li>
+          </ul>
+        </div>
     </div>
   </div>
 </header>

@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Confirmar Compra{% endblock %}
+
+{% block body %}
+<main>
+  <div class="container">
+    <h1>Confirmar Compra</h1>
+    <div class="card p-medium">
+      <h2>{{ coche.marca }} {{ coche.modelo }} - {{ coche.version }}</h2>
+      <p><strong>Precio:</strong> {{ coche.precio }}€</p>
+      <p><strong>Kilometraje:</strong> {{ coche.kilometros }} km</p>
+      <p><strong>Vendedor actual:</strong> {{ coche.vendedor.nombre }}</p>
+      <form action="{{ path('app_coche_comprar_confirm', {id: coche.id}) }}" method="POST">
+         <button type="submit" class="btn btn-success">Confirmar Compra</button>
+      </form>
+    </div>
+    <a href="{{ path('app_coche_show', {id: coche.id}) }}">Cancelar</a>
+  </div>
+</main>
+{% endblock %}

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Coche;
 use App\Form\CocheType;
 use App\Repository\CocheRepository;
+use App\Repository\MarcasRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
@@ -16,10 +17,13 @@ use Symfony\Component\Routing\Attribute\Route;
 final class CocheController extends AbstractController
 {
     #[Route('/', name: 'app_coche_index', methods: ['GET'])]
-    public function index(CocheRepository $cocheRepository): Response
+    public function index(CocheRepository $cocheRepository, MarcasRepository $marcasRepository): Response
     {
+        $coches = $cocheRepository->findBy(['vendido' => false]);
+        $marcas = $marcasRepository->findAll();
         return $this->render('coche/index.html.twig', [
-            'coches' => $cocheRepository->findAll(),
+            'coches' => $coches,
+            'marcas' => $marcas,
         ]);
     }
 
@@ -27,36 +31,47 @@ final class CocheController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $coche = new Coche();
-        $form = $this->createForm(CocheType::class, $coche);
+        $coche->setVendido(false);
+        $form = $this->createForm(CocheType::class, $coche, [
+            'is_admin' => $this->isGranted('ROLE_ADMIN')
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Asocia el coche al usuario logueado
+            
             $coche->setVendedor($this->getUser());
 
-            // Persistimos el coche para tener su ID
+            
             $entityManager->persist($coche);
             $entityManager->flush();
 
             /** @var UploadedFile[] $images */
-            $images = $form->get('images')->getData();
-            if ($images) {
+           $imageForms = $form->get('cochesImages')->all();
+            if ($imageForms) {
                 $targetDirectory = $this->getParameter('coches_images_directory') . '/' . $coche->getId();
                 if (!is_dir($targetDirectory)) {
                     mkdir($targetDirectory, 0755, true);
                 }
-                foreach ($images as $imageFile) {
-                    $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                    $newFilename = $originalFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-                    try {
-                        $imageFile->move($targetDirectory, $newFilename);
-                    } catch (FileException $e) {
-                        // Manejar error
+                $position = 1;
+                foreach ($imageForms as $imageForm) {
+                    
+                    $uploadedFile = $imageForm->get('imageFile')->getData();
+                    if ($uploadedFile) {
+                        $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
+                        $newFilename = $originalFilename . '-' . uniqid() . '.' . $uploadedFile->guessExtension();
+                        try {
+                            $uploadedFile->move($targetDirectory, $newFilename);
+                        } catch (\Exception $e) {
+                            continue;
+                        }
+                        $cochesImage = $imageForm->getData();
+                        
+                        $cochesImage->setRutaImagen($newFilename);
+                        $cochesImage->setPosicion($position);
+                        // Asegúrate de que la relación esté actualizada (si no se hace automáticamente)
+                        $cochesImage->setCocheId($coche);
+                        $position++;
                     }
-                    $cochesImage = new \App\Entity\CochesImages();
-                    $cochesImage->setRutaImagen($newFilename);
-                    $cochesImage->setCocheId($coche);
-                    $entityManager->persist($cochesImage);
                 }
                 $entityManager->flush();
             }
@@ -72,8 +87,13 @@ final class CocheController extends AbstractController
     #[Route('/coche/{id}', name: 'app_coche_show',requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(Coche $coche): Response
     {
+        $sortedImages = $coche->getCochesImages()->toArray();
+        usort($sortedImages, function($a, $b) {
+            return $a->getPosicion() <=> $b->getPosicion();
+        });
         return $this->render('coche/show.html.twig', [
             'coche' => $coche,
+            'sortedImages' => $sortedImages,
         ]);
     }
 
@@ -84,6 +104,55 @@ final class CocheController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Asegurar que el coche se haya actualizado
+            $entityManager->flush();
+
+            // Procesa las imágenes nuevas (si las hay)
+            $imageForms = $form->get('cochesImages')->all();
+            // Directorio de destino
+            $targetDirectory = $this->getParameter('coches_images_directory') . '/' . $coche->getId();
+            if (!is_dir($targetDirectory)) {
+                mkdir($targetDirectory, 0755, true);
+            }
+            // Recopilar todas las imágenes (nuevas y existentes)
+            $images = [];
+            foreach ($imageForms as $imageForm) {
+                // Procesa la imagen subida, en caso de haber
+                $uploadedFile = $imageForm->get('imageFile')->getData();
+                if ($uploadedFile) {
+                    $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
+                    $newFilename = $originalFilename . '-' . uniqid() . '.' . $uploadedFile->guessExtension();
+                    try {
+                        $uploadedFile->move($targetDirectory, $newFilename);
+                    } catch (\Exception $e) {
+                        // Puedes registrar el error o continuar con la siguiente imagen
+                        continue;
+                    }
+                    $cochesImage = $imageForm->getData();
+                    $cochesImage->setRutaImagen($newFilename);
+                    // Actualiza la relación con el coche
+                    $cochesImage->setCocheId($coche);
+                    $images[] = $cochesImage;
+                    $entityManager->persist($cochesImage);
+                } else {
+                    // Si no se ha subido una nueva imagen, usamos la imagen existente del formulario
+                    $existingImage = $imageForm->getData();
+                    if ($existingImage) {
+                        $images[] = $existingImage;
+                    }
+                }
+            }
+            
+            // Ordenar las imágenes por posición actual y reasignar posiciones si es necesario
+            usort($images, function ($a, $b) {
+                return $a->getPosicion() - $b->getPosicion();
+            });
+            $position = 1;
+            foreach ($images as $image) {
+                $image->setPosicion($position);
+                $position++;
+                $entityManager->persist($image);
+            }
             $entityManager->flush();
 
             return $this->redirectToRoute('app_coche_index', [], Response::HTTP_SEE_OTHER);
@@ -100,7 +169,9 @@ final class CocheController extends AbstractController
     {
         if ($this->isCsrfTokenValid('delete'.$coche->getId(), $request->request->get('_token'))) {
             $cocheId = $coche->getId();
-
+            foreach ($coche->getTransaccions() as $transaccion) {
+                $entityManager->remove($transaccion);
+            }
 
             $entityManager->remove($coche);
             $entityManager->flush();
@@ -117,7 +188,7 @@ final class CocheController extends AbstractController
             }
         }
 
-        return $this->redirectToRoute('app_coche_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_miscoches', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/mis-coches', name: 'app_miscoches', methods: ['GET'])]
@@ -144,7 +215,7 @@ final class CocheController extends AbstractController
 
     // Filtros Mediante AJAX
     #[Route('/coche/search', name: 'app_coche_search', methods: ['GET'])]
-    public function search(Request $request, CocheRepository $cocheRepository): Response
+    public function search(Request $request, CocheRepository $cocheRepository,MarcasRepository $marcasRepository): Response
     {
         $marca = $request->query->get('marca');
         $modelo = $request->query->get('modelo');
@@ -153,10 +224,11 @@ final class CocheController extends AbstractController
         $kilometros = $request->query->get('kilometros');
         $carroceria = $request->query->get('carroceria');
 
-        $qb = $cocheRepository->createQueryBuilder('c');
+        $qb = $cocheRepository->createQueryBuilder('c')->where('c.vendido = false');
 
         if ($marca) {
-            $qb->andWhere('c.marca = :marca')
+            $qb->join('c.marca', 'm')
+            ->andWhere('m.nombre = :marca')
             ->setParameter('marca', $marca);
         }
         if ($modelo) {
@@ -181,17 +253,20 @@ final class CocheController extends AbstractController
         }
 
         $coches = $qb->getQuery()->getResult();
+        $marcas = $marcasRepository->findAll();
         
         // Si es una petición AJAX, retorna solo el partial
         if ($request->isXmlHttpRequest()) {
             return $this->render('coche/coche_items.html.twig', [
-                'coches' => $coches
+                'coches' => $coches,
+                'marcas' => $marcas
             ]);
         }
         
         // En caso contrario, renderiza la página completa
         return $this->render('coche/index.html.twig', [
-            'coches' => $coches
+            'coches' => $coches,
+            'marcas' => $marcas
         ]);
     }
 }

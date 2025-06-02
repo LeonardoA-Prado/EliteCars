@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}ELITECARS - Vender Coche{% endblock %}
+{% block title %}ELITECARS | Vender Coche{% endblock %}
 
 {% block body %}
     {% if app.user %}
         <div class="container">
             <h1>Vende tu coche</h1>
             {{ include('coche/_form.html.twig') }}
-            <a href="{{ path('app_coche_index') }}">Volver</a>
+            <a class="btn btn-primary mt-3" href="{{ path('app_coche_index') }}">Volver</a>
         </div>
     {% else %}
         <main class="page-sell-car">

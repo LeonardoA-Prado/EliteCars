@@ -1,62 +1,54 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Usuario{% endblock %}
+{% block title %}ELITECARS | Usuario{% endblock %}
 
 {% block body %}
-{% if app.user and ('ROLE_ADMIN' in app.user.roles) %}
-    <h1>Usuario</h1>
+{% if app.user or ('ROLE_ADMIN' in app.user.roles) %}
+  <div class="container my-5">
+    <div class="card shadow-sm">
+      <div class="card-header bg-primary text-white text-center">
+        <h2>Datos del Usuario</h2>
+      </div>
+      <div class="card-body">
+        <h3 class="card-title">{{ usuario.nombre }} {{ usuario.apellidos }}</h3>
+        <p class="lead"><strong>Email:</strong> {{ usuario.email }}</p>
+        {% if usuario.coches|length > 0 %}
+          <div class="alert alert-warning mt-3">
+            Su cuenta tiene {{ usuario.coches|length }} coche(s) vinculado(s).
+          </div>
+        {% endif %}
+      </div>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ usuario.id }}</td>
-            </tr>
-            <tr>
-                <th>Nombre</th>
-                <td>{{ usuario.nombre }}</td>
-            </tr>
-            <tr>
-                <th>Apellidos</th>
-                <td>{{ usuario.apellidos }}</td>
-            </tr>
-            <tr>
-                <th>Email</th>
-                <td>{{ usuario.email }}</td>
-            </tr>
-            <tr>
-                <th>Contrasena</th>
-                <td>{{ usuario.contrasena }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_usuario_index') }}">back to list</a>
-
-    <a href="{{ path('app_usuario_edit', {'id': usuario.id}) }}">edit</a>
-
-<form action="{{ path('app_usuario_delete', {'id': usuario.id}) }}" method="post">
-  <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ usuario.id) }}">
-  
-  {% if usuario.coches|length > 0 %}
-    <div class="alert alert-warning">
-      Su cuenta tiene {{ usuario.coches|length }} coche(s) vinculado(s).
+      <div class="card-body">
+        <form action="{{ path('app_usuario_delete', {'id': usuario.id}) }}" method="post">
+          <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ usuario.id) }}">
+          <div class="alert alert-warning mb-3">
+            Marque la casilla para confirmar la eliminación de su cuenta{% if usuario.coches|length > 0 %} y de todos sus coches vinculados{% endif %}.
+            <label>
+              <input type="checkbox" name="confirm_deletion" value="1" required>
+              Confirmo borrar mi cuenta{% if usuario.coches|length > 0 %} y mis coches{% endif %}.
+            </label>
+          </div>
+          <div class="btn-group d-flex justify-content-center" role="group">
+            {% if is_granted('ROLE_ADMIN') %}
+              <a href="{{ path('app_usuario_index') }}" class="btn btn-secondary">Volver</a>
+            {% else %}
+              <a href="{{ path('app_coche_index') }}" class="btn btn-secondary">Volver</a>
+            {% endif %}
+            
+            <a class="btn btn-secondary" href="{{ path('app_usuario_edit', {'id': usuario.id}) }}">Editar</a>
+            <button type="submit" class="btn btn-danger">Borrar cuenta</button>
+          </div>
+        </form>
+      </div>
+      
     </div>
-  {% endif %}
-  
-  <div class="alert alert-warning">
-    Marque la casilla para confirmar la eliminación de su cuenta{% if usuario.coches|length > 0 %} y de todos sus coches vinculados{% endif %}.
-    <label>
-      <input type="checkbox" name="confirm_deletion" value="1" required>
-      Confirmo borrar mi cuenta{% if usuario.coches|length > 0 %} y mis coches{% endif %}.
-    </label>
   </div>
-  
-  <button type="submit" class="btn btn-danger">Borrar cuenta</button>
-</form>
 {% else %}
-    <div class="mb-3">
-        <h3>NO TIENES PERMISOS O NO TE HAS LOGUEADO!! <a href="{{ path('app_login') }}">Volver a loguearte</a></h3>
-    </div>
+  <div class="mb-3">
+    <h3>NO TIENES PERMISOS O NO TE HAS LOGUEADO!! 
+      <a href="{{ path('app_login') }}">Volver a loguearte</a>
+    </h3>
+  </div>
 {% endif %}
 {% endblock %}

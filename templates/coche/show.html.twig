@@ -1,137 +1,102 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ coche.marca }} {{ coche.modelo }}{% endblock %}
+{% block title %}
+	ELITECARS |
+	{{ coche.marca }}
+	{{ coche.modelo }}
+{% endblock %}
 
 {% block body %}
-<main>
-    <div class="container">
-        <!-- Título y región -->
-        <h1 class="car-details-page-title">{{ coche.marca }} {{ coche.modelo }} - {{ coche.version }}</h1>
-        <div class="car-details-region">{{ coche.ciudad }}</div>
+	<main>
+		<div
+			class="container">
+			<h1 class="car-details-page-title">{{ coche.marca }}
+				{{ coche.modelo }}
+				-
+				{{ coche.version }}</h1>
+			<div class="car-details-region">{{ coche.ciudad }}</div>
 
-        <div class="car-details-content">
-            <!-- Sección de imágenes y descripción -->
-            <div class="car-images-and-description">
-                <div class="car-images-carousel">
-                    <div class="car-image-wrapper">
-                        {% if coche.cochesImages|length > 0 %}
-                            <img src="{{ asset('images/coches/' ~ coche.id ~ '/' ~ coche.cochesImages|first.rutaImagen) }}"
-                                 alt="Imagen principal de {{ coche.marca }} {{ coche.modelo }}"
-                                 class="car-active-image" id="activeImage" />
-                        {% else %}
-                            <img src="{{ asset('images/default-car.png') }}"
-                                 alt="Sin imagen" class="car-active-image" id="activeImage" />
-                        {% endif %}
-                    </div>
-                    <div class="car-image-thumbnails">
-                        {% for image in coche.cochesImages %}
-                        <img src="{{ asset('images/coches/' ~ coche.id ~ '/' ~ image.rutaImagen) }}"
-                             alt="Imagen de {{ coche.marca }} {{ coche.modelo }}" />
-                        {% endfor %}
-                    </div>
-                    <button class="carousel-button prev-button" id="prevButton">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                             stroke="currentColor" style="width: 64px">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/>
-                        </svg>
-                    </button>
-                    <button class="carousel-button next-button" id="nextButton">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                             stroke="currentColor" style="width: 64px">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/>
-                        </svg>
-                    </button>
-                </div>
+			<div
+				class="car-details-content">
+				<div class="car-images-and-description">
+					<div class="car-images-carousel">
+						<div class="car-image-wrapper">
+							{% if sortedImages|length > 0 %}
+								<img src="{{ asset('images/coches/' ~ coche.id ~ '/' ~ sortedImages|first.rutaImagen) }}" alt="Imagen principal de {{ coche.marca }} {{ coche.modelo }}" class="car-active-image" id="activeImage"/>
+							{% else %}
+								<img src="{{ asset('images/ELITECARS-LOGO-0.png') }}" alt="Sin imagen" class="car-active-image" id="activeImage"/>
+							{% endif %}
+						</div>
+						<div class="car-image-thumbnails">
+							{% for image in sortedImages %}
+								<img src="{{ asset('images/coches/' ~ coche.id ~ '/' ~ image.rutaImagen) }}" alt="Imagen de {{ coche.marca }} {{ coche.modelo }}"/>
+							{% endfor %}
+						</div>
+						<button class="carousel-button prev-button" id="prevButton">
+							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 64px">
+								<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/>
+							</svg>
+						</button>
+						<button class="carousel-button next-button" id="nextButton">
+							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 64px">
+								<path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/>
+							</svg>
+						</button>
+					</div>
 
-                <div class="card car-detailed-description">
-                    <h2 class="car-details-title">Detalles del Vehiculo</h2>
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus a sem sed nunc interdum
-                        dignissim. Proin fringilla ligula in metus tincidunt, a varius magna molestie.
-                    </p>
-                </div>
-            </div>
+					<div class="card car-detailed-description">
+						<h2 class="car-details-title">Detalles del Vehiculo</h2>
+						<p>
+							Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus a sem sed nunc interdum							                        dignissim. Proin fringilla ligula in metus tincidunt, a varius magna molestie.
+						</p>
+					</div>
+				</div>
 
-            <!-- Sección de datos del coche -->
-            <div class="car-details card">
-                <table class="car-details-table">
-                    <tbody>
-                        <tr>
-                            <th>Marca</th>
-                            <td>{{ coche.marca }}</td>
-                        </tr>
-                        <tr>
-                            <th>Modelo</th>
-                            <td>{{ coche.modelo }}</td>
-                        </tr>
-                        <tr>
-                            <th>Version</th>
-                            <td>{{ coche.version }}</td>
-                        </tr>
-                        <tr>
-                            <th>Precio</th>
-                            <td>{{ coche.precio }}</td>
-                        </tr>
-                        <tr>
-                            <th>Kilómetros</th>
-                            <td>{{ coche.kilometros }}</td>
-                        </tr>
-                        <tr>
-                            <th>Ciudad</th>
-                            <td>{{ coche.ciudad }}</td>
-                        </tr>
-                        <tr>
-                            <th>Carrocería</th>
-                            <td>{{ coche.carroceria }}</td>
-                        </tr>
-                        <tr>
-                            <th>Color</th>
-                            <td>{{ coche.color }}</td>
-                        </tr>
-                        <tr>
-                            <th>Cambio</th>
-                            <td>{{ coche.cambio }}</td>
-                        </tr>
-                        <tr>
-                            <th>Combustible</th>
-                            <td>{{ coche.combustible }}</td>
-                        </tr>
-                        <tr>
-                            <th>Tracción</th>
-                            <td>{{ coche.traccion }}</td>
-                        </tr>
-                        <tr>
-                            <th>Potencia</th>
-                            <td>{{ coche.potencia }}</td>
-                        </tr>
-                        <tr>
-                            <th>Cilindrada</th>
-                            <td>{{ coche.cilindrada }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+				<!-- Sección de datos del coche -->
+				<div class="car-details card">
+					<div class="flex items-center justify-between">
+						<p class="car-details-price"> {{ coche.marca }} {{ coche.modelo }}</p>
+					</div>
+					<hr />
+						<li><strong>Marca y Modelo:</strong> {{ coche.marca }} {{ coche.modelo }}</li>
+						<hr>
+						<li><strong>Versión:</strong> {{ coche.version }}</li>
+						<hr>
+						<li><strong>Precio:</strong> {{ coche.precio }}€</li>
+						<hr>
+						<li><strong>Color:</strong> {{ coche.color }}</li>
+						<hr>
+						<li><strong>Kilómetros:</strong> {{ coche.kilometros }} KM</li>
+						<hr>
+						<li><strong>Potencia:</strong> {{ coche.potencia }} CV</li>
+						<hr>
+						<li><strong>Cilindrada:</strong> {{ coche.cilindrada }} CC</li>
+						<hr>
+						<li><strong>Carrocería:</strong> {{ coche.carroceria }}</li>
+						<hr>
+						<li><strong>Ciudad:</strong> {{ coche.ciudad }}</li>
+						<hr>
+						<li><strong>Combustible:</strong> {{ coche.combustible }}</li>
+					<hr />
+					<div class="actions">
+						<h3>Vendedor:{{ coche.vendedor.nombre }}</h3>
+						{% if coche.vendido %}
+							<button class="btn btn-primary btn-find-a-car-submit" disabled>VENDIDO</button>
+						{% elseif coche.vendedor and app.user and coche.vendedor.id != app.user.id %}
+							<a href="{{ path('app_coche_comprar', {id: coche.id}) }}">
+								<button class="btn btn-primary btn-find-a-car-submit">Comprar</button>
+							</a>
+						{% endif %}
+						{% if is_granted('ROLE_ADMIN') or (app.user and coche.vendedor.id == app.user.id) %}
+							<a href="{{ path('app_coche_edit', {'id': coche.id}) }}">
+								<button class="btn btn-primary btn-find-a-car-submit">Editar</button>
+							</a>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
 
-                <div class="actions">
-                    <a href="{{ path('app_coche_index') }}">Volver</a>
-                    {% if is_granted('ROLE_ADMIN') %}
-                        
-                        <a href="{{ path('app_coche_edit', {'id': coche.id}) }}">Editar</a>
-                        
-                    {% endif %}
-                    <h3>Vendedor: {{ coche.vendedor.nombre }}</h3>
-                    <p>Coches en venta: {{ coche.vendedor.coches|length }}</p>
-                    {% if coche.vendedor and app.user and coche.vendedor.id != app.user.id %}
-                        <button class="btn btn-primary btn-find-a-car-submit">Comprar</button>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
-</main>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/scrollReveal.js/4.0.9/scrollreveal.js"
-        integrity="sha512-XJgPMFq31Ren4pKVQgeD+0JTDzn0IwS1802sc+QTZckE6rny7AN2HLReq6Yamwpd2hFe5nJJGZLvPStWFv5Kww=="
-        crossorigin="anonymous"
-        referrerpolicy="no-referrer">
-</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/scrollReveal.js/4.0.9/scrollreveal.js" integrity="sha512-XJgPMFq31Ren4pKVQgeD+0JTDzn0IwS1802sc+QTZckE6rny7AN2HLReq6Yamwpd2hFe5nJJGZLvPStWFv5Kww==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 {% endblock %}
