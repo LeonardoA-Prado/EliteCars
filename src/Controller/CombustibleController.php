@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Combustible;
 use App\Form\CombustibleType;
 use App\Repository\CombustibleRepository;
+use Doctrine\ORM\EntityManagerInterface;
 
 #[Route('/admin/combustible')]
 final class CombustibleController extends AbstractController
