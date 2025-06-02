@@ -1,5 +1,10 @@
 {% block stylesheets %}
 	{{ encore_entry_link_tags('app') }}
+	<style>
+        body.page-login {
+            background-color: #f0f0f0; /* Nuevo color de fondo para la vista de login */
+        }
+    </style>
 {% endblock %}
 
 {% block javascripts %}
@@ -39,9 +44,6 @@
 							</div>
 							<div class="form-group">
 								<input type="password" name="_password" id="password" class="form-control" autocomplete="current-password" required placeholder="Insertar tu contraseña">
-							</div>
-							<div class="text-right mb-medium">
-								<a href="#" class="auth-page-password-reset">Reset Password</a>
 							</div>
 
 							<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">

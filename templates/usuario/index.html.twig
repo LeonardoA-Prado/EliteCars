@@ -17,6 +17,7 @@
                 <p class="m-0">
                   <span class="user-item-badge">{{ usuario.roles|join(', ') }}</span>
                 </p>
+                <hr />
                 <div class="mt-small flex justify-between">
                   <a href="{{ path('app_usuario_show', {'id': usuario.id}) }}" class="btn btn-primary btn-sm">Ver Perfil</a>
                   <a href="{{ path('app_usuario_edit', {'id': usuario.id}) }}" class="btn btn-secondary btn-sm">Editar</a>

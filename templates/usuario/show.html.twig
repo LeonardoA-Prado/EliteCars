@@ -3,52 +3,67 @@
 {% block title %}ELITECARS | Usuario{% endblock %}
 
 {% block body %}
-{% if app.user or ('ROLE_ADMIN' in app.user.roles) %}
-  <div class="container my-5">
-    <div class="card shadow-sm">
-      <div class="card-header bg-primary text-white text-center">
-        <h2>Datos del Usuario</h2>
-      </div>
-      <div class="card-body">
-        <h3 class="card-title">{{ usuario.nombre }} {{ usuario.apellidos }}</h3>
-        <p class="lead"><strong>Email:</strong> {{ usuario.email }}</p>
-        {% if usuario.coches|length > 0 %}
-          <div class="alert alert-warning mt-3">
-            Su cuenta tiene {{ usuario.coches|length }} coche(s) vinculado(s).
+<body class="page-signup">
+  <main>
+    <div class="container-small page-login">
+      <div class="flex" style="gap: 5rem">
+        <div class="auth-page-form">
+          <h1 class="auth-page-title">Datos del Usuario</h1>
+          <hr />
+          <div class="form-group">
+            <label><strong>Nombre</strong></label>
+            <div class="form-control">{{ usuario.nombre }}</div>
           </div>
-        {% endif %}
-      </div>
-
-      <div class="card-body">
-        <form action="{{ path('app_usuario_delete', {'id': usuario.id}) }}" method="post">
-          <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ usuario.id) }}">
-          <div class="alert alert-warning mb-3">
-            Marque la casilla para confirmar la eliminación de su cuenta{% if usuario.coches|length > 0 %} y de todos sus coches vinculados{% endif %}.
-            <label>
-              <input type="checkbox" name="confirm_deletion" value="1" required>
-              Confirmo borrar mi cuenta{% if usuario.coches|length > 0 %} y mis coches{% endif %}.
-            </label>
+          
+          <div class="form-group">
+            <label><strong>Apellidos</strong></label>
+            <div class="form-control">{{ usuario.apellidos }}</div>
           </div>
-          <div class="btn-group d-flex justify-content-center" role="group">
+          
+          
+          <div class="form-group">
+            <label><strong>Correo electrónico</strong></label>
+            <div class="form-control">{{ usuario.email }}</div>
+          </div>
+          
+          
+          {% if usuario.coches|length > 0 %}
+            <div class="alert alert-warning mt-3">
+              Su cuenta tiene {{ usuario.coches|length }} coche(s) vinculado(s).
+            </div>
+          {% endif %}
+          
+          <hr />
+          
+          <div class="flex justify-end gap-1">
             {% if is_granted('ROLE_ADMIN') %}
-              <a href="{{ path('app_usuario_index') }}" class="btn btn-secondary">Volver</a>
+              <a href="{{ path('app_usuario_index') }}" class="btn btn-default">Volver</a>
             {% else %}
-              <a href="{{ path('app_coche_index') }}" class="btn btn-secondary">Volver</a>
+              <a href="{{ path('app_coche_index') }}" class="btn btn-default">Volver</a>
             {% endif %}
-            
-            <a class="btn btn-secondary" href="{{ path('app_usuario_edit', {'id': usuario.id}) }}">Editar</a>
-            <button type="submit" class="btn btn-danger">Borrar cuenta</button>
+            <a href="{{ path('app_usuario_edit', {'id': usuario.id}) }}" class="btn" style="background-color:rgb(226, 192, 38); color: #000;" >Editar</a>
           </div>
-        </form>
+          
+          {# Formulario para borrar la cuenta con la casilla de confirmación #}
+          <form action="{{ path('app_usuario_delete', {'id': usuario.id}) }}" method="post" style="margin-top: 1rem;">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ usuario.id) }}">
+            <div class="form-group">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" name="confirm_deletion" value="1" required>
+                  Confirmo borrar mi cuenta{% if usuario.coches|length > 0 %} y todos mis coches vinculados{% endif %}.
+                </label>
+              </div>
+            </div>
+            <button type="submit" class="btn" style="background-color:rgb(226, 38, 38); color: #fff;">Borrar cuenta</button>
+          </form>
+          
+        </div>
+        <div class="auth-page-image">
+          <img src="{{ asset('images/carlogo.png') }}" alt="Car Image" class="img-responsive" />
+        </div>
       </div>
-      
     </div>
-  </div>
-{% else %}
-  <div class="mb-3">
-    <h3>NO TIENES PERMISOS O NO TE HAS LOGUEADO!! 
-      <a href="{{ path('app_login') }}">Volver a loguearte</a>
-    </h3>
-  </div>
-{% endif %}
+  </main>
+</body>
 {% endblock %}

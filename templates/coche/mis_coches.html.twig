@@ -1,80 +1,66 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}ELITECARS | Mis Coches{% endblock %}
+{% block title %}ELITECARS | Mis Coches
+{% endblock %}
 
 {% block body %}
-<main>
-    <div class="container">
-        <h1 class="car-details-page-title">Mis Coches</h1>
-        {% if coches is empty %}
-            <p>No tienes coches registrados.</p>
-        {% else %}
-            <div class="card p-medium">
-                <div class="table-responsive">
-                    <table class="table text-center">
-                        <thead>
-                            <tr>
-                                <th>Imagen</th>
-                                <th>Marca</th>
-                                <th>Modelo</th>
-                                <th>Versión</th>
-                                <th>Precio</th>
-                                <th>Kilómetros</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for coche in coches %}
-                                <tr>
-                                    <td>
-                                        {% if coche.cochesImages|length > 0 %}
-                                            <img src="{{ asset('images/coches/' ~ coche.id ~ '/' ~ coche.cochesImages|first.rutaImagen) }}"
-                                                 alt="Imagen de {{ coche.marca }}"
-                                                 class="my-cars-img-thumbnail" />
-                                        {% else %}
-                                            <img src="{{ asset('images/coches/default-car.png') }}"
-                                                 alt="Sin imagen"
-                                                 class="my-cars-img-thumbnail" />
-                                        {% endif %}
-                                    </td>
-                                    <td>{{ coche.marca }}</td>
-                                    <td>{{ coche.modelo }}</td>
-                                    <td>{{ coche.version }}</td>
-                                    <td>{{ coche.precio }}</td>
-                                    <td>{{ coche.kilometros }}</td>
-                                    <td>
-                                        <a href="{{ path('app_coche_show', {'id': coche.id}) }}"
-                                           class="btn btn-view inline-flex items-center">
-                                            Ver
-                                        </a>
-                                        <a href="{{ path('app_coche_edit', {'id': coche.id}) }}"
-                                           class="btn btn-edit inline-flex items-center">
-                                            Editar
-                                        </a>
-                                        <a href="{{ path('coche_manage_images', {'id': coche.id}) }}"
-                                           class="btn btn-edit inline-flex items-center">
-                                            Imagenes
-                                        </a>
-                                        <form action="{{ path('app_coche_delete', {'id': coche.id}) }}"
-                                              method="post" style="display:inline-block;">
-                                            <input type="hidden" name="_token"
-                                                   value="{{ csrf_token('delete' ~ coche.id) }}">
-                                            <button class="btn btn-delete inline-flex items-center"
-                                                    onclick="return confirm('¿Estás seguro de borrar este coche?');">
-                                                Borrar
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        {% endif %}
-    </div>
-</main>
-<footer></footer>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/scrollReveal.js/4.0.9/scrollreveal.js"
-        referrerpolicy="no-referrer"></script>
-{% endblock %}
+	<main>
+		<div class="container">
+			<h1 class="car-details-page-title">Mis Coches</h1>
+			{% if coches is empty %}
+				<p>No tienes coches registrados.</p>
+			{% else %}
+				<div class="card p-medium">
+					<div class="table-responsive">
+						<table class="table text-center">
+							<thead>
+								<tr></tr>
+								<tr>
+									<th style="text-align: center;">Imagen</th>
+									<th style="text-align: center;">Marca</th>
+									<th style="text-align: center;">Modelo</th>
+									<th style="text-align: center;">Versión</th>
+									<th style="text-align: center;">Precio</th>
+									<th style="text-align: center;">Kilómetros</th>
+									<th style="text-align: center;">Acciones</th>
+								</tr>
+							</thead>
+						</tr>
+					</thead>
+					<tbody>
+						{% for coche in coches %}
+							<tr>
+								<td>
+									{% if coche.cochesImages|length > 0 %}
+										<img src="{{ asset('images/coches/' ~ coche.id ~ '/' ~ coche.cochesImages|first.rutaImagen) }}" alt="Imagen de {{ coche.marca }}" class="my-cars-img-thumbnail"/>
+									{% else %}
+										<img src="{{ asset('images/coches/default-car.png') }}" alt="Sin imagen" class="my-cars-img-thumbnail"/>
+									{% endif %}
+								</td>
+								<td>{{ coche.marca }}</td>
+								<td>{{ coche.modelo }}</td>
+								<td>{{ coche.version }}</td>
+								<td>{{ coche.precio }}</td>
+								<td>{{ coche.kilometros }}</td>
+								<td>
+									<a href="{{ path('app_coche_show', {'id': coche.id}) }}" class="btn btn-default inline-flex items-center">
+										Ver
+									</a>
+									<a href="{{ path('app_coche_edit', {'id': coche.id}) }}" class="btn btn-edit inline-flex items-center" style="background-color:rgb(226, 192, 38); color: #fff;">
+										Editar
+									</a>
+									<form action="{{ path('app_coche_delete', {'id': coche.id}) }}" method="post" style="display:inline-block;">
+										<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ coche.id) }}">
+										<button class="btn btn-delete inline-flex items-center" style="background-color:rgb(226, 38, 38); color: #fff;" onclick="return confirm('¿Estás seguro de borrar este coche?');">
+											Borrar
+										</button>
+									</form>
+								</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	{% endif %}
+</div></main><footer></footer><script src="https://cdnjs.cloudflare.com/ajax/libs/scrollReveal.js/4.0.9/scrollreveal.js" referrerpolicy="no-referrer"></script>{% endblock %}

@@ -4,15 +4,229 @@
 
 {% block body %}
     {% if not app.user or (coche.vendedor.id != app.user.id and 'ROLE_ADMIN' not in app.user.roles) %}
-        <div class="container">
+        <div class="container-small page-login">
             <h2>No tienes permisos para editar este coche.</h2>
             <a href="{{ path('app_coche_index') }}" class="btn btn-secondary mt-3">Volver al listado</a>
         </div>
     {% else %}
-        <div class="container">
-            <h1>Editar tu coche</h1>
-            {{ include('coche/_form.html.twig', { 'form': form, 'button_label': 'Actualizar Coche' }) }}
-            <a href="{{ path('app_coche_index') }}" class="btn btn-secondary mt-3">Volver</a>
-        </div>
+        <main>
+            <div class="container-small">
+                <h1 class="car-details-page-title">Editar tu coche</h1>
+                {{ form_start(form, {
+                    'attr': {
+                        'enctype': 'multipart/form-data',
+                        'class': 'card add-new-car-form'
+                    }
+                }) }}
+                    <div class="form-content">
+                        <div class="form-details">
+                            {# Fila 1: Marca, Modelo y Versión #}
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        {{ form_label(form.marca, 'Marca') }}
+                                        {{ form_widget(form.marca, {'attr': {'class': 'form-control'}}) }}
+                                        {{ form_errors(form.marca) }}
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        {{ form_label(form.modelo, 'Modelo') }}
+                                        {{ form_widget(form.modelo, {'attr': {'class': 'form-control'}}) }}
+                                        {{ form_errors(form.modelo) }}
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        {{ form_label(form.version, 'Versión') }}
+                                        {{ form_widget(form.version, {'attr': {'class': 'form-control'}}) }}
+                                        {{ form_errors(form.version) }}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {# Fila 2: Precio, Kilómetros y Combustible #}
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        {{ form_label(form.precio, 'Precio') }}
+                                        {{ form_widget(form.precio, {'attr': {'class': 'form-control', 'placeholder': 'Precio'}}) }}
+                                        {{ form_errors(form.precio) }}
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        {{ form_label(form.kilometros, 'Kilómetros') }}
+                                        {{ form_widget(form.kilometros, {'attr': {'class': 'form-control', 'placeholder': 'Kilómetros'}}) }}
+                                        {{ form_errors(form.kilometros) }}
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        {{ form_label(form.combustible, 'Combustible') }}
+                                        {{ form_widget(form.combustible, {'attr': {'class': 'form-control'}}) }}
+                                        {{ form_errors(form.combustible) }}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {# Fila 3: Ciudad y Carrocería #}
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        {{ form_label(form.ciudad, 'Ciudad') }}
+                                        {{ form_widget(form.ciudad, {'attr': {'class': 'form-control'}}) }}
+                                        {{ form_errors(form.ciudad) }}
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        {{ form_label(form.carroceria, 'Carrocería') }}
+                                        {{ form_widget(form.carroceria, {'attr': {'class': 'form-control'}}) }}
+                                        {{ form_errors(form.carroceria) }}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {# Fila 4: Color, Cambio y Tracción #}
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        {{ form_label(form.color, 'Color') }}
+                                        {{ form_widget(form.color, {'attr': {'class': 'form-control'}}) }}
+                                        {{ form_errors(form.color) }}
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        {{ form_label(form.cambio, 'Cambio') }}
+                                        {{ form_widget(form.cambio, {'attr': {'class': 'form-control'}}) }}
+                                        {{ form_errors(form.cambio) }}
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        {{ form_label(form.traccion, 'Tracción') }}
+                                        {{ form_widget(form.traccion, {'attr': {'class': 'form-control'}}) }}
+                                        {{ form_errors(form.traccion) }}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {# Fila 5: Potencia y Cilindrada #}
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        {{ form_label(form.potencia, 'Potencia (CV)') }}
+                                        {{ form_widget(form.potencia, {'attr': {'class': 'form-control'}}) }}
+                                        {{ form_errors(form.potencia) }}
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        {{ form_label(form.cilindrada, 'Cilindrada (CC)') }}
+                                        {{ form_widget(form.cilindrada, {'attr': {'class': 'form-control'}}) }}
+                                        {{ form_errors(form.cilindrada) }}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {# Grupo de imágenes, si está definido en el formulario #}
+                            {% if form.cochesImages is defined %}
+                            <div class="form-group">
+                                <label>Imágenes</label>
+                                <div id="images-collection" data-prototype="{{ form_widget(form.cochesImages.vars.prototype)|e('html_attr') }}">
+                                    {% for imageForm in form.cochesImages %}
+                                        <div class="image-field mb-3 border p-2">
+                                            {% if coche is defined and imageForm.vars.value and imageForm.vars.value.rutaImagen is not empty %}
+                                                <img src="{{ asset('images/coches/' ~ coche.id ~ '/' ~ imageForm.vars.value.rutaImagen) }}"
+                                                     alt="Imagen actual" class="img-thumbnail mb-2" style="width: 120px;">
+                                            {% endif %}
+                                            {{ form_row(imageForm.imageFile, {'attr': {'class': 'image-input'}}) }}
+                                            {{ form_row(imageForm.posicion) }}
+                                            <button type="button" class="btn btn-danger btn-sm remove-image">Eliminar</button>
+                                            <div class="preview-container"></div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <button type="button" id="add-image" class="btn btn-secondary mt-2">Agregar imagen</button>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="p-medium" style="width: 100%">
+                            <div class="flex justify-end gap-1">
+                                <a href="{{ path('app_coche_index') }}" class="btn btn-default">Volver</a>
+                                <button type="submit" class="btn btn-primary">Actualizar Coche</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                {{ form_end(form) }}
+
+                <script>
+document.addEventListener('DOMContentLoaded', function() {
+    var collectionHolder = document.getElementById('images-collection');
+    var addImageBtn = document.getElementById('add-image');
+    
+    if(addImageBtn){
+        addImageBtn.addEventListener('click', function() {
+            var prototype = collectionHolder.dataset.prototype;
+            // Contar únicamente los div.image-field hijos, en lugar de todos los hijos
+            var index = collectionHolder.querySelectorAll('.image-field').length;
+            var newForm = prototype.replace(/__name__/g, index);
+            
+            var div = document.createElement('div');
+            div.classList.add('image-field', 'mb-3', 'border', 'p-2');
+            div.innerHTML = newForm + '<button type="button" class="btn btn-danger btn-sm remove-image">Eliminar</button><div class="preview-container"></div>';
+            collectionHolder.appendChild(div);
+            updatePositions();
+            addPreviewListener(div.querySelector('.image-input'));
+        });
+    }
+
+    // Delegación de eventos para eliminar imágenes
+    collectionHolder.addEventListener('click', function(e) {
+        if (e.target && e.target.classList.contains('remove-image')) {
+            e.target.parentElement.remove();
+            updatePositions();
+        }
+    });
+
+    function updatePositions() {
+        var imageFields = collectionHolder.querySelectorAll('.image-field');
+        imageFields.forEach(function(field, i){
+            var positionInput = field.querySelector('input[name$="[posicion]"]');
+            if (positionInput) {
+                positionInput.value = i + 1;
+            }
+        });
+    }
+
+    function addPreviewListener(input) {
+        if(input) {
+            input.addEventListener('change', function(e){
+                var file = e.target.files[0];
+                if(file){
+                    var reader = new FileReader();
+                    reader.onload = function(){
+                        var previewContainer = input.closest('.image-field').querySelector('.preview-container');
+                        if(previewContainer){
+                            previewContainer.innerHTML = '<img src="'+ reader.result +'" alt="Vista previa" class="img-thumbnail mt-2" style="width: 120px;">';
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+    }
+
+    document.querySelectorAll('.image-input').forEach(function(input){
+        addPreviewListener(input);
+    });
+});
+</script>
+            </div>
+        </main>
+        
     {% endif %}
 {% endblock %}

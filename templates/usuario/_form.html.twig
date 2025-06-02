@@ -1,8 +1,13 @@
+{% block stylesheets %}
+             {{ encore_entry_link_tags('app') }}
+        {% endblock %}
 
-
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
 {{ form_start(form, {'attr': {'class': 'auth-page-form'}}) }}
 
-<div class="container-small" style="background-color: transparent; padding: 2rem; border-radius: 0.5rem;">
+<div class="container-small">
   <div class="form-group">
     {{ form_label(form.nombre, 'Nombre') }}
     {{ form_widget(form.nombre, {'attr': {'class': 'form-control', 'placeholder': 'Ingresa tu nombre'}}) }}
