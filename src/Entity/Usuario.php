@@ -43,9 +43,16 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Transaccion::class, mappedBy: 'comprador')]
     private Collection $transaccions;
 
+    /**
+     * @var Collection<int, Coche>
+     */
+    #[ORM\OneToMany(targetEntity: Coche::class, mappedBy: 'vendedor')]
+    private Collection $coches;
+
     public function __construct()
     {
         $this->transaccions = new ArrayCollection();
+        $this->coches = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -182,6 +189,36 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection<int, Coche>
+     */
+    public function getCoches(): Collection
+    {
+        return $this->coches;
+    }
+
+    public function addCoch(Coche $coch): static
+    {
+        if (!$this->coches->contains($coch)) {
+            $this->coches->add($coch);
+            $coch->setVendedor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCoch(Coche $coch): static
+    {
+        if ($this->coches->removeElement($coch)) {
+            // set the owning side to null (unless already changed)
+            if ($coch->getVendedor() === $this) {
+                $coch->setVendedor(null);
+            }
+        }
+
+        return $this;
     }
 
 }

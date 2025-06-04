@@ -15,8 +15,7 @@ class Coche
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $marca = null;
+    
 
     #[ORM\Column(length: 255)]
     private ?string $modelo = null;
@@ -42,8 +41,6 @@ class Coche
     #[ORM\Column(length: 255)]
     private ?string $cambio = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $combustible = null;
 
     #[ORM\Column(length: 255)]
     private ?string $traccion = null;
@@ -60,9 +57,29 @@ class Coche
     #[ORM\OneToMany(targetEntity: Transaccion::class, mappedBy: 'coche')]
     private Collection $transaccions;
 
+    #[ORM\ManyToOne(inversedBy: 'coches')]
+    private ?Usuario $vendedor = null;
+
+    /**
+     * @var Collection<int, CochesImages>
+     */
+    #[ORM\OneToMany(targetEntity: CochesImages::class, mappedBy: 'coche_id',cascade: ['persist','remove'], orphanRemoval: true)]
+    private Collection $cochesImages;
+
+    #[ORM\ManyToOne(inversedBy: 'coches')]
+    private ?Marcas $marca = null;
+
+    #[ORM\ManyToOne(inversedBy: 'coches')]
+    private ?Combustible $Combustible = null;
+
+    #[ORM\Column]
+    private ?bool $vendido = null;
+
+
     public function __construct()
     {
         $this->transaccions = new ArrayCollection();
+        $this->cochesImages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -70,17 +87,8 @@ class Coche
         return $this->id;
     }
 
-    public function getMarca(): ?string
-    {
-        return $this->marca;
-    }
+    
 
-    public function setMarca(string $marca): static
-    {
-        $this->marca = $marca;
-
-        return $this;
-    }
 
     public function getModelo(): ?string
     {
@@ -126,7 +134,6 @@ class Coche
     public function setKilometros(int $kilometros): static
     {
         $this->kilometros = $kilometros;
-
         return $this;
     }
 
@@ -178,17 +185,6 @@ class Coche
         return $this;
     }
 
-    public function getCombustible(): ?string
-    {
-        return $this->combustible;
-    }
-
-    public function setCombustible(string $combustible): static
-    {
-        $this->combustible = $combustible;
-
-        return $this;
-    }
 
     public function getTraccion(): ?string
     {
@@ -255,4 +251,83 @@ class Coche
 
         return $this;
     }
+
+    public function getVendedor(): ?Usuario
+    {
+        return $this->vendedor;
+    }
+
+    public function setVendedor(?Usuario $vendedor): static
+    {
+        $this->vendedor = $vendedor;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CochesImages>
+     */
+    public function getCochesImages(): Collection
+    {
+        return $this->cochesImages;
+    }
+
+    public function addCochesImage(CochesImages $cochesImage): static
+    {
+        if (!$this->cochesImages->contains($cochesImage)) {
+            $this->cochesImages->add($cochesImage);
+            $cochesImage->setCocheId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCochesImage(CochesImages $cochesImage): static
+    {
+        if ($this->cochesImages->removeElement($cochesImage)) {
+            // set the owning side to null (unless already changed)
+            if ($cochesImage->getCocheId() === $this) {
+                $cochesImage->setCocheId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getMarca(): ?Marcas
+    {
+        return $this->marca;
+    }
+
+    public function setMarca(?Marcas $marca): static
+    {
+        $this->marca = $marca;
+
+        return $this;
+    }
+
+    public function getCombustible(): ?Combustible
+    {
+        return $this->Combustible;
+    }
+
+    public function setCombustible(?Combustible $Combustible): static
+    {
+        $this->Combustible = $Combustible;
+
+        return $this;
+    }
+
+    public function isVendido(): ?bool
+    {
+        return $this->vendido;
+    }
+
+    public function setVendido(bool $vendido): static
+    {
+        $this->vendido = $vendido;
+
+        return $this;
+    }
+
 }

@@ -1,4 +1,50 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+{% block stylesheets %}
+             {{ encore_entry_link_tags('app') }}
+        {% endblock %}
+
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
+{{ form_start(form, {'attr': {'class': 'auth-page-form'}}) }}
+
+<div class="container-small">
+  <div class="form-group">
+    {{ form_label(form.nombre, 'Nombre') }}
+    {{ form_widget(form.nombre, {'attr': {'class': 'form-control', 'placeholder': 'Ingresa tu nombre'}}) }}
+    {{ form_errors(form.nombre) }}
+  </div>
+
+  <div class="form-group">
+    {{ form_label(form.apellidos, 'Apellidos') }}
+    {{ form_widget(form.apellidos, {'attr': {'class': 'form-control', 'placeholder': 'Ingresa tus apellidos'}}) }}
+    {{ form_errors(form.apellidos) }}
+  </div>
+
+  <div class="form-group">
+    {{ form_label(form.email, 'Correo electrónico') }}
+    {{ form_widget(form.email, {'attr': {'class': 'form-control', 'placeholder': 'Ingresa tu email'}}) }}
+    {{ form_errors(form.email) }}
+  </div>
+
+  <div class="form-group">
+    {{ form_label(form.contrasena, 'Nueva Contraseña') }}
+    {{ form_widget(form.contrasena, {'attr': {'class': 'form-control', 'placeholder': 'Ingresa tu contraseña', 'value': ''}}) }}
+    {{ form_errors(form.contrasena) }}
+  </div>
+
+  {% if form.roles is defined %}
+  <div class="form-group">
+    {{ form_label(form.roles, 'Roles') }}
+    <div>
+      {{ form_widget(form.roles) }}
+    </div>
+    {{ form_errors(form.roles) }}
+  </div>
+{% endif %}
+
+  <button type="submit" class="btn btn-primary w-full mt-large">
+    {{ button_label|default('Guardar') }}
+  </button>
+</div>
+
 {{ form_end(form) }}

@@ -1,0 +1,62 @@
+{% block stylesheets %}
+             {{ encore_entry_link_tags('app') }}
+{% endblock %}
+
+{% block body %}
+    <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ELITE CARS | Página no encontrada</title>
+    <link rel="stylesheet" href="css/app.css" />
+    <style>
+      body.page-login {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #000, #333);
+        min-height: 100vh;
+        margin: 0;
+      }
+      .auth-page-form {
+        background-color: rgba(255, 255, 255, 0.05);
+        padding: 2rem;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      }
+      .auth-page-form a img {
+        width: 200px;
+        margin-bottom: 1rem;
+      }
+      .auth-page-title {
+        margin: 1rem 0;
+        font-size: 3rem;
+        color: #fff;
+      }
+      .error-description {
+        color: #ddd;
+        margin-bottom: 2rem;
+        font-size: 1.25rem;
+      }
+      .btn-primary {
+        padding: 0.75rem 1.5rem;
+        font-size: 1.25rem;
+      }
+    </style>
+  </head>
+  <body class="page-login">
+    <main>
+      <div class="auth-page-form">
+        <a href="/">
+          <img src="{{ asset('images/ELITECARS-LOGO-0.png') }}" alt="Logo" />
+        </a>
+        <h1 class="auth-page-title">ERROR!</h1>
+        <p class="error-description">¡Vaya! La página que buscas no se encontró.</p>
+        <a href="{{ path('app_coche_index') }}" class="btn btn-primary btn-login">Volver al inicio</a>
+      </div>
+    </main>
+  </body>
+</html>
+{% endblock %}

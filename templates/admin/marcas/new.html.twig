@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ELITECARS | Crear Marca{% endblock %}
+
+{% block body %}
+<body class="page-signup">
+  <main>
+    <div class="container-small page-login">
+      <div class="flex" style="gap: 5rem">
+        <div class="auth-page-form">
+          <h1 class="auth-page-title">Crear Marca</h1>
+          {{ form_start(form, {'attr': {'class': 'auth-page-form'}}) }}
+            <div class="form-group">
+              {{ form_label(form.nombre, 'Nombre de la Marca') }}
+              {{ form_widget(form.nombre, {'attr': {'class': 'form-control', 'placeholder': 'Ingresa el nombre'}}) }}
+              {{ form_errors(form.nombre) }}
+            </div>
+            <hr />
+            <div class="flex" style="gap: 1rem">
+              <button type="submit" class="btn btn-primary btn-login w-full">Crear Marca</button>
+              <a href="{{ path('admin_panel_index') }}" class="btn btn-secondary btn-login w-full">Volver al Panel</a>
+            </div>
+          {{ form_end(form) }}
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+{% endblock %}

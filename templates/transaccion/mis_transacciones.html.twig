@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mis Transacciones{% endblock %}
+
+{% block body %}
+<main>
+  <div class="container">
+    <h1>Mis Transacciones</h1>
+
+    <div class="transacciones-vendidos" style="margin-bottom: 40px;">
+      <h2>Coches Vendidos</h2>
+      {% if vendidos is not empty %}
+      <div id="vendidosListing" class="car-items-listing">
+        {% for transaccion in vendidos %}
+          {% set coche = transaccion.coche %}
+          <div class="car-item card">
+            <a href="{{ path('app_coche_show', {'id': coche.id}) }}">
+              <img
+                src="{{ asset('images/coches/' ~ coche.id ~ '/' ~ (coche.cochesImages|first).rutaImagen) }}"
+                alt=""
+                class="car-item-img rounded-t"
+              />
+            </a>
+            <div class="p-medium">
+              <h2 class="car-item-title">{{ coche.marca }} {{ coche.modelo }} {{ coche.version }}</h2>
+              <p class="car-item-price">{{ coche.precio }}€</p>
+              <hr />
+              <p class="m-0">
+                <span class="car-item-badge">{{ coche.carroceria }}</span>
+                <span class="car-item-badge">{{ coche.combustible }}</span>
+                <span class="car-item-badge">{{ coche.potencia }} HP</span>
+              </p>
+            </div>
+            <div class="p-medium" style="border-top: 1px solid #eee; margin-top:10px;">
+              <p><strong>Datos de la Transacción</strong></p>
+              <p><strong>Precio de Venta:</strong> {{ transaccion.precioTransaccion }}€</p>
+              <p><strong>Fecha:</strong> {{ transaccion.fechaTransaccion|date('d/m/Y') }}</p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      {% else %}
+         <p>Aún no has vendido ningún coche.</p>
+      {% endif %}
+    </div>
+
+    <div class="transacciones-comprados">
+      <h2>Coches Comprados</h2>
+      {% if comprados is not empty %}
+      <div id="compradosListing" class="car-items-listing">
+        {% for transaccion in comprados %}
+          {% set coche = transaccion.coche %}
+          <div class="car-item card">
+            <a href="{{ path('app_coche_show', {'id': coche.id}) }}">
+              <img
+                src="{{ asset('images/coches/' ~ coche.id ~ '/' ~ (coche.cochesImages|first).rutaImagen) }}"
+                alt=""
+                class="car-item-img rounded-t"
+              />
+            </a>
+            <div class="p-medium">
+              <h2 class="car-item-title">{{ coche.marca }} {{ coche.modelo }} {{ coche.version }}</h2>
+              <p class="car-item-price">{{ coche.precio }}€</p>
+              <hr />
+              <p class="m-0">
+                <span class="car-item-badge">{{ coche.carroceria }}</span>
+                <span class="car-item-badge">{{ coche.combustible }}</span>
+                <span class="car-item-badge">{{ coche.potencia }} HP</span>
+              </p>
+            </div>
+            <div class="p-medium" style="border-top: 1px solid #eee; margin-top:10px;">
+              <p><strong>Datos de la Transacción</strong></p>
+              <p><strong>Precio de Compra:</strong> {{ transaccion.precioTransaccion }}€</p>
+              <p><strong>Fecha:</strong> {{ transaccion.fechaTransaccion|date('d/m/Y') }}</p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      {% else %}
+         <p>Aún no has comprado ningún coche.</p>
+      {% endif %}
+    </div>
+
+  </div>
+</main>
+{% endblock %}

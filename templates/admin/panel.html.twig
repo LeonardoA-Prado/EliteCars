@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Panel de Control - Marcas y Combustibles{% endblock %}
+
+{% block body %}
+<main>
+  <section class="container my-medium">
+    <h1 class="text-center mb-medium">Panel de Control</h1>
+    
+    <!-- Sección de Marcas -->
+    <div class="mb-large">
+      <div class="flex justify-between items-center mb-small">
+        <h2 class="text-xl font-bold">Marcas</h2>
+        <a href="{{ path('admin_marcas_create') }}" class="btn btn-primary">Crear</a>
+      </div>
+      <div class="car-items-listing">
+        {% for marca in marcas %}
+          <div class="car-item card">
+            <div class="p-medium">
+              <h2 class="car-item-title">{{ marca.nombre }}</h2>
+              <hr />
+              <a href="{{ path('admin_marcas_edit', {'id': marca.id}) }}" class="btn btn-secondary">Editar</a>
+            </div>
+          </div>
+        {% else %}
+          <p>No existen marcas registradas.</p>
+        {% endfor %}
+      </div>
+    </div>
+    
+    <!-- Sección de Combustibles -->
+    <div class="mb-large">
+      <div class="flex justify-between items-center mb-small">
+        <h2 class="text-xl font-bold">Combustibles</h2>
+        <a href="{{ path('admin_combustible_create') }}" class="btn btn-primary">Crear</a>
+      </div>
+      <div class="car-items-listing">
+        {% for combustible in combustibles %}
+          <div class="car-item card">
+            <div class="p-medium">
+              <h2 class="car-item-title">{{ combustible.nombre }}</h2>
+              <hr />
+              <a href="{{ path('admin_combustible_edit', {'id': combustible.id}) }}" class="btn btn-secondary">Editar</a>
+            </div>
+          </div>
+        {% else %}
+          <p>No existen combustibles registrados.</p>
+        {% endfor %}
+      </div>
+    </div>
+    
+  </section>
+</main>
+{% endblock %}
