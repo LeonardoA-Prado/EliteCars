@@ -8,16 +8,14 @@
 
 {% block body %}
 	<main>
-		<div
-			class="container">
+		<div class="container">
 			<h1 class="car-details-page-title">{{ coche.marca }}
 				{{ coche.modelo }}
 				-
 				{{ coche.version }}</h1>
 			<div class="car-details-region">{{ coche.ciudad }}</div>
 
-			<div
-				class="car-details-content">
+			<div class="car-details-content">
 				<div class="car-images-and-description">
 					<div class="car-images-carousel">
 						<div class="car-image-wrapper">
@@ -55,37 +53,69 @@
 				<!-- Sección de datos del coche -->
 				<div class="car-details card">
 					<div class="flex items-center justify-between">
-						<p class="car-details-price"> {{ coche.marca }} {{ coche.modelo }}</p>
+						<p class="car-details-price">
+							{{ coche.marca }}
+							{{ coche.modelo }}</p>
 					</div>
-					<hr />
-						<li><strong>Marca y Modelo:</strong> {{ coche.marca }} {{ coche.modelo }}</li>
-						<hr>
-						<li><strong>Versión:</strong> {{ coche.version }}</li>
-						<hr>
-						<li><strong>Precio:</strong> {{ coche.precio }}€</li>
-						<hr>
-						<li><strong>Color:</strong> {{ coche.color }}</li>
-						<hr>
-						<li><strong>Kilómetros:</strong> {{ coche.kilometros }} KM</li>
-						<hr>
-						<li><strong>Potencia:</strong> {{ coche.potencia }} CV</li>
-						<hr>
-						<li><strong>Cilindrada:</strong> {{ coche.cilindrada }} CC</li>
-						<hr>
-						<li><strong>Carrocería:</strong> {{ coche.carroceria }}</li>
-						<hr>
-						<li><strong>Ciudad:</strong> {{ coche.ciudad }}</li>
-						<hr>
-						<li><strong>Combustible:</strong> {{ coche.combustible }}</li>
-					<hr />
+					<hr/>
+					<li>
+						<strong>Marca y Modelo:</strong>
+						{{ coche.marca }}
+						{{ coche.modelo }}</li>
+					<hr>
+					<li>
+						<strong>Versión:</strong>
+						{{ coche.version }}</li>
+					<hr>
+					<li>
+						<strong>Precio:</strong>
+						{{ coche.precio }}€</li>
+					<hr>
+					<li>
+						<strong>Color:</strong>
+						{{ coche.color }}</li>
+					<hr>
+					<li>
+						<strong>Kilómetros:</strong>
+						{{ coche.kilometros }}
+						KM</li>
+					<hr>
+					<li>
+						<strong>Potencia:</strong>
+						{{ coche.potencia }}
+						CV</li>
+					<hr>
+					<li>
+						<strong>Cilindrada:</strong>
+						{{ coche.cilindrada }}
+						CC</li>
+					<hr>
+					<li>
+						<strong>Carrocería:</strong>
+						{{ coche.carroceria }}</li>
+					<hr>
+					<li>
+						<strong>Ciudad:</strong>
+						{{ coche.ciudad }}</li>
+					<hr>
+					<li>
+						<strong>Combustible:</strong>
+						{{ coche.combustible }}</li>
+					<hr/>
 					<div class="actions">
 						<h3>Vendedor:{{ coche.vendedor.nombre }}</h3>
 						{% if coche.vendido %}
 							<button class="btn btn-primary btn-find-a-car-submit" disabled>VENDIDO</button>
-						{% elseif coche.vendedor and app.user and coche.vendedor.id != app.user.id %}
-							<a href="{{ path('app_coche_comprar', {id: coche.id}) }}">
-								<button class="btn btn-primary btn-find-a-car-submit">Comprar</button>
-							</a>
+						{% elseif coche.vendedor %}
+							{% if app.user and coche.vendedor.id != app.user.id %}
+								<a href="{{ path('app_coche_comprar', {id: coche.id}) }}">
+									<button class="btn btn-primary btn-find-a-car-submit">Comprar</button>
+								</a>
+							{% elseif not app.user %}
+								<a href="{{ path('app_login') }}">
+									<button class="btn btn-primary btn-find-a-car-submit">Comprar</button>
+								</a>
+							{% endif %}
 						{% endif %}
 						{% if is_granted('ROLE_ADMIN') or (app.user and coche.vendedor.id == app.user.id) %}
 							<a href="{{ path('app_coche_edit', {'id': coche.id}) }}">

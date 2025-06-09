@@ -8,6 +8,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Email;
 
 class UsuarioType extends AbstractType
 {
@@ -16,7 +19,16 @@ class UsuarioType extends AbstractType
         $builder
             ->add('nombre')
             ->add('apellidos')
-            ->add('email')
+            ->add('email', EmailType::class, [
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Por favor ingresa un correo electrónico',
+                    ]),
+                    new Email([
+                        'message' => 'Por favor ingresa un correo electrónico válido',
+                    ]),
+                ],
+            ])
             ->add('contrasena', PasswordType::class, [
                 'required' => $options['edit'] ? false : true,
                 'mapped' => false, // usando un campo no mapeado para que no se rellene con el hash

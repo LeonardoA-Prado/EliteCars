@@ -12,10 +12,13 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Validator\Constraints\All;
 use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Validator\Constraints\Range;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class CocheType extends AbstractType
 {
@@ -31,8 +34,10 @@ class CocheType extends AbstractType
                 'prototype' => true,
                 'constraints' => [
                     new Count([
+                        'min' => 1,
                         'max' => 10,
-                        'maxMessage' => 'No se pueden subir más de 10 imágenes.'
+                        'maxMessage' => 'No se pueden subir más de 10 imágenes.',
+                        'minMessage' => 'debes subir al menos 1 imagen.'
                     ])
                 ]
             ])
@@ -44,8 +49,30 @@ class CocheType extends AbstractType
             ])
             ->add('modelo')
             ->add('version')
-            ->add('precio')
-            ->add('kilometros')
+            ->add('precio',IntegerType::class, [
+                    'constraints' => [
+                        new Assert\PositiveOrZero([
+                            'message' => 'El precio no puede ser negativo.',
+                        ]),
+                        new Assert\Range([
+                            'max' => 10000000,
+                            'maxMessage' => 'El Precio no puede ser mayor a {{ limit }}.',
+                        ]),
+                    ],
+                    'attr' => ['class' => 'form-control', 'placeholder' => 'Kilómetros'],
+                ])
+            ->add('kilometros', IntegerType::class, [
+                    'constraints' => [
+                        new Assert\PositiveOrZero([
+                            'message' => 'El kilometraje no puede ser negativo.',
+                        ]),
+                        new Assert\Range([
+                            'max' => 1000000,
+                            'maxMessage' => 'El kilometraje no puede ser mayor a {{ limit }} km.',
+                        ]),
+                    ],
+                    'attr' => ['class' => 'form-control', 'placeholder' => 'Kilómetros'],
+                ])
             ->add('ciudad')
             ->add('carroceria', ChoiceType::class, [
                 'choices' => [
@@ -56,16 +83,47 @@ class CocheType extends AbstractType
                 'placeholder' => 'Seleccione una opción',
             ])
             ->add('color')
-            ->add('cambio')
+            ->add('cambio',ChoiceType::class,[
+                'choices' => [
+                    'Manual' => 'manual',
+                    'Automatico' => 'automatico',
+                ],
+                'placeholder' => 'Seleccione una opción',
+            ])
             ->add('combustible', EntityType::class, [
                 'class' => Combustible::class,
                 'choice_label' => 'nombre',
                 'placeholder' => 'Seleccione una marca',
                 'attr' => ['class' => 'form-control']
             ])
-            ->add('traccion')
-            ->add('potencia')
-            ->add('cilindrada')
+            ->add('traccion',ChoiceType::class,[
+                'choices' => [
+                    'Trasera' => 'trasera',
+                    'Delantera' => 'delantera',
+                    '4x4' => '4x4',
+                ],
+                'placeholder' => 'Seleccione una opción',
+            ])
+            ->add('potencia', null, [
+                'constraints' => [
+                    new Range([
+                        'min' => 60,
+                        'max' => 2000,
+                        'notInRangeMessage' => 'La potencia debe estar entre {{ min }} y {{ max }} CV.',
+                    ])
+                ],
+                'attr' => ['class' => 'form-control', 'placeholder' => 'Ej: 150']
+            ])
+            ->add('cilindrada', null, [
+                'constraints' => [
+                    new Range([
+                        'min' => 500,
+                        'max' => 8000,
+                        'notInRangeMessage' => 'La cilindrada debe estar entre {{ min }} y {{ max }} CC.',
+                    ])
+                ],
+                'attr' => ['class' => 'form-control', 'placeholder' => 'Ej: 800']
+            ])
         ;
     }
 

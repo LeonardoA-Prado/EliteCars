@@ -31,11 +31,7 @@ class CochesImagesType extends AbstractType
                 ]
             ])
             ->add('posicion')
-            ->add('delete', CheckboxType::class, [
-                'mapped' => false,
-                'required' => false,
-                'label' => 'Eliminar',
-            ])
+            
         ;
         
     }
