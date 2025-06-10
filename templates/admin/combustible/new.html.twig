@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ELITECARS | Crear Combustible{% endblock %}
+
+{% block body %}
+<body class="page-signup">
+  <main>
+    <div class="container-small page-login">
+      <div class="flex" style="gap: 5rem">
+        <div class="auth-page-form">
+          <h1 class="auth-page-title">Crear Combustible</h1>
+          {{ form_start(form, {'attr': {'class': 'auth-page-form'}}) }}
+            <div class="form-group">
+              {{ form_label(form.nombre, 'Tipo de Combustible') }}
+              {{ form_widget(form.nombre, {'attr': {'class': 'form-control', 'placeholder': 'Ingresa el combustible'}}) }}
+              {{ form_errors(form.nombre) }}
+            </div>
+            <hr />
+            <button type="submit" class="btn btn-primary btn-login w-full">Crear Combustible</button>
+          {{ form_end(form) }}
+        </div>
+        
+      </div>
+    </div>
+  </main>
+</body>
+{% endblock %}

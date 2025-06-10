@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Confirmar Compra{% endblock %}
+
+{% block body %}
+<body class="page-signup">
+  <main>
+    <div class="container-small page-login">
+      <div class="flex" style="gap: 5rem">
+        <div class="auth-page-form">
+          <h1 class="auth-page-title">Confirmar Compra</h1>
+          <hr />
+          <div class="card p-medium">
+            <h2 class="car-item-title">{{ coche.marca }} {{ coche.modelo }} - {{ coche.version }}</h2>
+            <p class="car-item-price"><strong>Precio:</strong> {{ coche.precio }}€</p>
+            <p><strong>Kilometraje:</strong> {{ coche.kilometros }} km</p>
+            <p><strong>Vendedor actual:</strong> {{ coche.vendedor.nombre }}</p>
+          </div>
+          <form action="{{ path('app_coche_comprar_confirm', {id: coche.id}) }}" method="POST" style="margin-top: 1rem;">
+            <div class="flex justify-between gap-1">
+              <button type="submit" class="btn btn-success w-full">Confirmar Compra</button>
+              <a href="{{ path('app_coche_show', {id: coche.id}) }}" class="btn btn-default w-full">Cancelar</a>
+            </div>
+          </form>
+        </div>
+        <div class="auth-page-image" style="border: 5px solid #ccc;">
+          <img src="{{ asset('images/coches/' ~ coche.id ~ '/' ~ coche.cochesImages|first.rutaImagen) }}" alt="Car Image" class="img-responsive" />
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+{% endblock %}

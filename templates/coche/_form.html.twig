@@ -1,0 +1,187 @@
+{{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+
+<div class="form-group">
+    <label>Imágenes</label>
+    <div id="images-collection" data-prototype="{{ form_widget(form.cochesImages.vars.prototype)|e('html_attr') }}">
+        {% for imageForm in form.cochesImages %}
+           <div class="image-field mb-3 border p-2">
+                {% set imageEntity = imageForm.vars.value %}
+                {# Si ya existe la imagen, se muestra la preview #}
+                {% if coche is defined and imageEntity and imageEntity.rutaImagen is not empty %}
+                    <img src="{{ asset('images/coches/' ~ coche.id ~ '/' ~ imageEntity.rutaImagen) }}" alt="Imagen actual" class="img-thumbnail mb-2" style="width: 120px;">
+                {% endif %}
+                {{ form_row(imageForm.imageFile, {'attr': {'class': 'image-input'}}) }}
+                {{ form_row(imageForm.posicion) }}
+                <button type="button" class="btn btn-danger btn-sm remove-image">Eliminar</button>
+                <div class="preview-container"></div>
+           </div>
+        {% endfor %}
+    </div>
+    <button type="button" id="add-image" class="btn btn-secondary mt-2">Agregar imagen</button>
+</div>
+
+<div class="row">
+    <div class="col">
+        <div class="form-group">
+            {{ form_label(form.marca) }}
+            {{ form_widget(form.marca, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.marca) }}
+        </div>
+    </div>
+    <div class="col">
+        <div class="form-group">
+            {{ form_label(form.modelo) }}
+            {{ form_widget(form.modelo, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.modelo) }}
+        </div>
+    </div>
+    <div class="col">
+        <div class="form-group">
+            {{ form_label(form.version) }}
+            {{ form_widget(form.version, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.version) }}
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    {{ form_label(form.carroceria) }}
+    {{ form_widget(form.carroceria, {'attr': {'class': 'form-control', 'placeholder': 'Carrocería'}}) }}
+    {{ form_errors(form.carroceria) }}
+</div>
+
+<div class="row">
+    <div class="col">
+        <div class="form-group">
+            {{ form_label(form.precio) }}
+            {{ form_widget(form.precio, {'attr': {'class': 'form-control', 'placeholder': 'Precio'}}) }}
+            {{ form_errors(form.precio) }}
+        </div>
+    </div>
+    <div class="col">
+        <div class="form-group">
+            {{ form_label(form.kilometros) }}
+            {{ form_widget(form.kilometros, {'attr': {'class': 'form-control', 'placeholder': 'Kilómetros'}}) }}
+            {{ form_errors(form.kilometros) }}
+        </div>
+    </div>
+    <div class="col">
+        <div class="form-group">
+            {{ form_label(form.potencia) }}
+            {{ form_widget(form.potencia, {'attr': {'class': 'form-control', 'placeholder': 'Potencia'}}) }}
+            {{ form_errors(form.potencia) }}
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    {{ form_label(form.combustible) }}
+    {{ form_widget(form.combustible, {'attr': {'class': 'form-control', 'placeholder': 'Combustible'}}) }}
+    {{ form_errors(form.combustible) }}
+</div>
+
+<div class="row">
+    <div class="col">
+        <div class="form-group">
+            {{ form_label(form.ciudad) }}
+            {{ form_widget(form.ciudad, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.ciudad) }}
+        </div>
+    </div>
+    <div class="col">
+        <div class="form-group">
+            {{ form_label(form.color) }}
+            {{ form_widget(form.color, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.color) }}
+        </div>
+    </div>
+    <div class="col">
+        <div class="form-group">
+            {{ form_label(form.cambio) }}
+            {{ form_widget(form.cambio, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.cambio) }}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <div class="form-group">
+            {{ form_label(form.traccion) }}
+            {{ form_widget(form.traccion, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.traccion) }}
+        </div>
+    </div>
+    <div class="col">
+        <div class="form-group">
+            {{ form_label(form.cilindrada) }}
+            {{ form_widget(form.cilindrada, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.cilindrada) }}
+        </div>
+    </div>
+</div>
+
+<button class="btn btn-primary mt-3">{{ button_label|default('Guardar') }}</button>
+
+{{ form_end(form) }}
+
+<script>
+  // Añade dinámicamente una nueva entrada de imagen usando el prototype del CollectionType
+  document.getElementById('add-image').addEventListener('click', function() {
+      var collectionHolder = document.getElementById('images-collection');
+      var prototype = collectionHolder.getAttribute('data-prototype');
+      var index = collectionHolder.children.length;
+      var newForm = prototype.replace(/__name__/g, index);
+      var div = document.createElement('div');
+      div.classList.add('image-field', 'mb-3', 'border', 'p-2');
+      div.innerHTML = newForm + '<button type="button" class="btn btn-danger btn-sm remove-image">Eliminar</button><div class="preview-container"></div>';
+      collectionHolder.appendChild(div);
+      updatePositions();
+      // Añadir listener al nuevo input de imagen para mostrar preview
+      addPreviewListener(div.querySelector('.image-input'));
+  });
+
+  // Permite eliminar una entrada de imagen y reordena la posición
+  document.getElementById('images-collection').addEventListener('click', function(e) {
+      if (e.target && e.target.classList.contains('remove-image')) {
+          e.target.parentElement.remove();
+          updatePositions();
+      }
+  });
+
+  // Asigna de forma secuencial la posición a cada imagen
+  function updatePositions() {
+      var collectionHolder = document.getElementById('images-collection');
+      var imageFields = collectionHolder.querySelectorAll('.image-field');
+      for (var i = 0; i < imageFields.length; i++) {
+          var positionInput = imageFields[i].querySelector('input[name$="[posicion]"]');
+          if (positionInput) {
+              positionInput.value = i + 1;
+          }
+      }
+  }
+
+  // Listener para mostrar vista previa al seleccionar una imagen
+  function addPreviewListener(input) {
+      if(input){
+          input.addEventListener('change', function(e){
+              var file = e.target.files[0];
+              if(file){
+                  var reader = new FileReader();
+                  reader.onload = function(){
+                      var previewContainer = input.closest('.image-field').querySelector('.preview-container');
+                      if(previewContainer){
+                          previewContainer.innerHTML = '<img src="'+ reader.result +'" alt="Vista previa" class="img-thumbnail mt-2" style="width: 120px;">';
+                      }
+                  };
+                  reader.readAsDataURL(file);
+              }
+          });
+      }
+  }
+
+  // Inicializar listener en inputs existentes
+  document.querySelectorAll('.image-input').forEach(function(input){
+      addPreviewListener(input);
+  });
+</script>

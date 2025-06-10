@@ -1,0 +1,32 @@
+{% if coches is empty %}
+  <div class="car-item card">
+    <img src="{{ asset('images/coches/default-car.png') }}" alt="Sin imagen" class="car-item-img rounded-t"/>
+    <div class="p-medium">
+      <h2 class="car-item-title">No se encontraron coches</h2>
+      <p class="car-item-price">Lo sentimos, no hay resultados para esa búsqueda.</p>
+    </div>
+  </div>
+{% else %}
+  {% for coche in coches %}
+    <div class="car-item card">
+      {% set primeraImagen = coche.cochesImages|first %}
+      <a href="{{ path('app_coche_show', {'id': coche.id}) }}">
+        {% if primeraImagen and primeraImagen.rutaImagen is defined %}
+          <img src="{{ asset('images/coches/' ~ coche.id ~ '/' ~ primeraImagen.rutaImagen) }}" alt="" class="car-item-img rounded-t"/>
+        {% else %}
+          <img src="{{ asset('images/coches/default-car.png') }}" alt="Sin imagen" class="car-item-img rounded-t"/>
+        {% endif %}
+      </a>
+      <div class="p-medium">
+        <h2 class="car-item-title">{{ coche.marca }} {{ coche.modelo }} {{ coche.version }}</h2>
+        <p class="car-item-price">{{ coche.precio }}€</p>
+        <hr/>
+        <p class="m-0">
+          <span class="car-item-badge">{{ coche.carroceria }}</span>
+          <span class="car-item-badge">{{ coche.combustible }}</span>
+          <span class="car-item-badge">{{ coche.potencia }} HP</span>
+        </p>
+      </div>
+    </div>
+  {% endfor %}
+{% endif %}
